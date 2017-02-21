@@ -10,8 +10,8 @@ GraphObject::Direction randDir();
 class Actor : public GraphObject
 {
 public:
-	Actor(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, StudentWorld* world)
-		: GraphObject(imageID, startX, startY, startDirection, depth), Health(healthstatue), m_world(world), ID(imageID)
+	Actor(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* world)
+		: GraphObject(imageID, startX, startY, startDirection, depth), Health(healthstatue), m_world(world), blocked(block)
 	{};
 	//virtual ~Actor();
 	//mutator
@@ -20,15 +20,16 @@ public:
 
 											  //accesory 
 	int randDis(int start, int end);
-
+	bool isblocked() const;
 	int currHealth() const;
 	StudentWorld* getStdW() const;
-	int whatamI() const;
+	//int whatamI() const;
 
 private:
 	int Health;
 	StudentWorld* m_world;
-	int ID;
+	bool blocked;
+	//int ID;
 
 };
 
@@ -36,10 +37,10 @@ private:
 class pebble : public Actor
 {
 public:
-	pebble(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, StudentWorld* StWorld) :
-		Actor(imageID, startX, startY, startDirection, depth, healthstatue, StWorld)
+	pebble(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* StWorld) :
+		Actor(imageID, startX, startY, startDirection, depth, healthstatue, block, StWorld)
 	{};
-	void doSomething();
+	virtual void doSomething() {};
 private:
 
 };
@@ -48,12 +49,20 @@ private:
 class babbyGrasshopper : public Actor //maybe change the base class to Grasshopper will be better 
 {
 public:
-	babbyGrasshopper(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, StudentWorld* StWorld) :
-		Actor(imageID, startX, startY, startDirection, depth, healthstatue, StWorld)
+	babbyGrasshopper(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* StWorld) :
+		Actor(imageID, startX, startY, startDirection, depth, healthstatue, block, StWorld)
 	{};
-	void doSomething();
+	virtual void doSomething();
 private:
-	bool checkSurr(int x, int y);
+	bool checkSurr(int x, int y, int ox, int oy);
 };
+
+struct Cord
+{
+	int X;
+	int Y;
+};
+
+bool inbound(int x, int y);
 
 #endif // ACTOR_H_

@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "Field.h"
 #include <string>
+#include <iostream> 
 using namespace std;
 
 GameWorld* createStudentWorld(string assetDir)
@@ -41,12 +42,12 @@ int StudentWorld::init()
 			Field::FieldItem item = f.getContentsOf(x, y); // note it’s x,y and not y,x!!!
 			if (item == Field::FieldItem::rock)
 			{
-				Actor* Ptr = new pebble(IID_ROCK, x, y, GraphObject::right, 1, 100000, this);
+				Actor* Ptr = new pebble(IID_ROCK, x, y, GraphObject::right, 1, 100000, true, this);
 				actorobjhld.push_front(Ptr);
 			}
 			else if (item == Field::FieldItem::grasshopper)
 			{
-				Actor* Ptr = new babbyGrasshopper(IID_BABY_GRASSHOPPER, x, y, randDir(), 0, 500, this); //direction random IS THE POINTER USED CORRECTLY??
+				Actor* Ptr = new babbyGrasshopper(IID_BABY_GRASSHOPPER, x, y, randDir(), 0, 500, false, this); //direction random IS THE POINTER USED CORRECTLY??
 				actorobjhld.push_front(Ptr);
 			}
 			//more if statements required to be implemented 
@@ -63,6 +64,7 @@ int StudentWorld::move()
 	//(e.g., each of the ants, grasshoppers, pheromones, etc.) to try to do something
 	for (std::list<Actor*>::iterator ite = actorobjhld.begin(); ite != actorobjhld.end(); ++ite)
 	{
+		//cout << "the item moved is " << (*ite)->whatamI();
 		(*ite)->doSomething();
 	}
 
