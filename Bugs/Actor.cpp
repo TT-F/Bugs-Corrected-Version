@@ -6,19 +6,20 @@
 
 //base class 
 
-//Actor::~Actor()
-//{
-//}
-
 void Actor::setHelath(int wantedHealth)
 {
 	Health = wantedHealth;
 }
 
+void Actor::setmoved(bool input)
+{
+	moved = input;
+}
+
 int Actor::randDis(int start, int end)
 {
 	int a = rand() % (end-1) + start;
-	std::cout << "the random distance is " << a << std::endl;
+	/*std::cout << "the random distance is " << a << std::endl;*/
 	return a;
 }
 
@@ -38,16 +39,14 @@ StudentWorld * Actor::getStdW() const
 	return m_world;
 }
 
+bool Actor::ismoved() const
+{
+	return moved;
+}
+
 //int Actor::whatamI() const
 //{
 //	return ID;
-//}
-
-
-//pebble class 
-
-//void pebble::doSomething()
-//{
 //}
 
 
@@ -55,99 +54,88 @@ StudentWorld * Actor::getStdW() const
 
 void babbyGrasshopper::doSomething()
 {
-	Cord Co;
-	//The BabyGrasshopper must pick a random distance to walk in this random direction. The distance must be between[2, 10], inclusive.
-	switch (randDir())
+	Cord oldCo;
+	oldCo.X = getX();
+	oldCo.Y = getY();
+	Cord newCo = oldCo;
+	if (getdisDistance() != 0)
 	{
-	case(GraphObject::up):
-		std::cout << "up ";
-		Co.X = getX();
-		Co.Y = getY() + randDis(2, 10);
-		if (checkSurr(Co.X,Co.Y,getX(),getY()))
+		switch (disDir)
 		{
-			std::cout << "SUCCESS UP " <<std::endl;
-			setDirection(GraphObject::up);
-			moveTo(Co.X, Co.Y);
+		case(GraphObject::up):
+			
+			newCo.Y++;
+			if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+			{
+				setDirection(disDir);
+				moveTo(newCo.X, newCo.Y);
+			}
+			setdisDistance(getdisDistance() - 1);
+			break;
+		case(GraphObject::down):
+			
+			newCo.Y--;
+			if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+			{
+				setDirection(disDir);
+				moveTo(newCo.X, newCo.Y);
+			}
+			setdisDistance(getdisDistance() - 1);
+			break;
+		case(GraphObject::left):
+			
+			newCo.X--;
+			if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+			{
+				setDirection(disDir);
+				moveTo(newCo.X, newCo.Y);
+			}
+			setdisDistance(getdisDistance() - 1);
+			break;
+		case(GraphObject::right):
+			
+			newCo.X++;
+			if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+			{
+				setDirection(disDir);
+				moveTo(newCo.X, newCo.Y);
+			}
+			setdisDistance(getdisDistance() - 1);
+			break;
+		default:
 			break;
 		}
-	case(GraphObject::down):
-		std::cout << "down ";
-		Co.X = getX();
-		Co.Y = getY() - randDis(2, 10);
-		if (checkSurr(Co.X, Co.Y, getX(), getY()))
-		{
-			std::cout << "SUCCESS down " << std::endl;
-			setDirection(GraphObject::down);
-			moveTo(Co.X, Co.Y);
-			break;
-		}
-	case(GraphObject::left):
-		std::cout << "left ";
-		Co.X = getX() - randDis(2, 10);
-		Co.Y = getY();
-		if (checkSurr(Co.X, Co.Y, getX(), getY()))
-		{
-			std::cout << "SUCCESS left " << std::endl;
-			setDirection(GraphObject::left);
-			moveTo(Co.X, Co.Y);
-			break;
-		}
-	case(GraphObject::right):
-		std::cout << "right ";
-		Co.X = getX() + randDis(2, 10);
-		Co.Y = getY();
-		if (checkSurr(Co.X, Co.Y, getX(), getY()))
-		{
-			std::cout << "SUCCESS right " << std::endl;
-			setDirection(GraphObject::right);
-			moveTo(Co.X, Co.Y);
-			break;
-		}
-	default:
-		break;
 	}
+	else
+	{
+		setdisDistance(randDis(2, 10));
+		disDir = randDir();
+	}
+	
+	//set moved checking condition 
+	setmoved(true);
 
 	//lossing 1 hitpoint 
 	//setHelath(currHealth() - 1);
 }
 
-bool babbyGrasshopper::checkSurr(int x, int y, int ox, int oy)
+void babbyGrasshopper::setdisDistance(int input)
 {
-	if (!inbound(x, y))
-		return false;
-	if (y == oy)
-	{
-		for (int xx = ox; xx <= x;xx++)
-		{
-			if (getStdW()->find(xx, y) != nullptr)
-				if ((getStdW()->find(xx, y)->isblocked())) //can I use getID() from GameWorld??
-				{
-					std::cout << "NOT ALLOWED IN XX" << std::endl;
-					return false;
-				}
-					
-		}
-	}
-	if (x == ox)
-	{
-		for (int yy = oy; yy <= y;yy++)
-		{
-			if (getStdW()->find(x, yy) != nullptr)
-				if ((getStdW()->find(x, yy)->isblocked())) //can I use getID() from GameWorld??
-				{
-					std::cout << "NOT ALLOWED IN YY" << std::endl;
-					return false;
-				}
-		}
-	}
-
-	return true;
+	disredDistance = input;
 }
+
+
+int babbyGrasshopper::getdisDistance() const
+{
+	return disredDistance;
+}
+
+
 
 GraphObject::Direction randDir()
 {
 	int a = rand() % 4;
-	std::cout << "the random direction generated is " << a << std::endl;
+	/*std::cout << "the random direction generated is " << a << std::endl;*/
 	switch (a)
 	{
 	case 0:
@@ -168,10 +156,4 @@ GraphObject::Direction randDir()
 	}
 }
 
-bool inbound(int x, int y)
-{
-	if (x<1 || x>VIEW_WIDTH - 1)
-		return false;
-	if (y<1 || y>VIEW_HEIGHT - 1)
-		return false;
-}
+

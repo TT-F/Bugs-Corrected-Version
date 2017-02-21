@@ -25,16 +25,19 @@ public:
 
 	virtual void cleanUp();
 
-	Actor* find(int x, int y);
+	bool checkpebble(int x, int y);
 
 	void updateTickCount();
 
+
+	void resetmoved();
+
 private:
-	std::list<Actor*> actorobjhld;
+	std::list<Actor*> actorobjhld[VIEW_WIDTH][VIEW_HEIGHT];
 	int elaptick = 0;
 
-
-
 };
+
+
 
 #endif // STUDENTWORLD_H_

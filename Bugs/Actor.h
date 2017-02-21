@@ -10,25 +10,27 @@ GraphObject::Direction randDir();
 class Actor : public GraphObject
 {
 public:
-	Actor(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* world)
-		: GraphObject(imageID, startX, startY, startDirection, depth), Health(healthstatue), m_world(world), blocked(block)
+	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
+		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move)
 	{};
-	//virtual ~Actor();
 	//mutator
 	virtual void doSomething() = 0; //pure virtual function, since something can move other things cannot 
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
-
-											  //accesory 
-	int randDis(int start, int end);
+	void setmoved(bool input);
+	//accesory 
+	int randDis(int s, int end);
 	bool isblocked() const;
 	int currHealth() const;
 	StudentWorld* getStdW() const;
+	bool ismoved() const;
 	//int whatamI() const;
 
 private:
 	int Health;
 	StudentWorld* m_world;
+	bool moved;
 	bool blocked;
+	
 	//int ID;
 
 };
@@ -37,8 +39,8 @@ private:
 class pebble : public Actor
 {
 public:
-	pebble(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* StWorld) :
-		Actor(imageID, startX, startY, startDirection, depth, healthstatue, block, StWorld)
+	pebble(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, StudentWorld* StWorld) :
+		Actor(ID, sX, sY, sDire, depth, heSt, block, false, StWorld)
 	{};
 	virtual void doSomething() {};
 private:
@@ -49,12 +51,21 @@ private:
 class babbyGrasshopper : public Actor //maybe change the base class to Grasshopper will be better 
 {
 public:
-	babbyGrasshopper(int imageID, int startX, int startY, Direction startDirection, int depth, int healthstatue, bool block, StudentWorld* StWorld) :
-		Actor(imageID, startX, startY, startDirection, depth, healthstatue, block, StWorld)
+	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
+		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
 	{};
 	virtual void doSomething();
+
+	//Mutator 
+	void setdisDistance(int input);
+	
+	//Accessory 
+	int getdisDistance() const;
+	
 private:
-	bool checkSurr(int x, int y, int ox, int oy);
+	int disredDistance;
+	
+	GraphObject::Direction disDir;
 };
 
 struct Cord
@@ -63,6 +74,6 @@ struct Cord
 	int Y;
 };
 
-bool inbound(int x, int y);
+
 
 #endif // ACTOR_H_
