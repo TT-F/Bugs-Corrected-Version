@@ -54,12 +54,39 @@ bool Actor::ismoved() const
 
 void babbyGrasshopper::doSomething()
 {
+	//lossing 1 hitpoint 
+	setHelath(currHealth() - 1);
+
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
 	Cord newCo = oldCo;
-	if (getdisDistance() != 0)
+	
+	//if (currHealth() <= 0)
+	//{
+	//	//return 
+	//}
+	//else 
+	if (Stun != 0)
 	{
+		setStun(getStun() - 1);
+		return;
+	}
+	//else if (currHealth() >= 1600)
+	//{
+	//	//turn into adult grasshopper 
+	//	//return 
+	//}
+	//eat food 
+	//if it eats food, it will have 50% go to sleep 
+	
+	//else
+	{
+		if (getdisDistance() == 0)
+		{
+			setdisDistance(randDis(2, 10));
+			disDir = randDir();
+		}
 		switch (disDir)
 		{
 		case(GraphObject::up):
@@ -69,8 +96,13 @@ void babbyGrasshopper::doSomething()
 			{
 				setDirection(disDir);
 				moveTo(newCo.X, newCo.Y);
+				setdisDistance(getdisDistance() - 1);
+				setmoved(true);
 			}
-			setdisDistance(getdisDistance() - 1);
+			else
+				setdisDistance(0);
+
+			setStun(2);
 			break;
 		case(GraphObject::down):
 			
@@ -79,8 +111,13 @@ void babbyGrasshopper::doSomething()
 			{
 				setDirection(disDir);
 				moveTo(newCo.X, newCo.Y);
+				setdisDistance(getdisDistance() - 1);
+				setmoved(true);
 			}
-			setdisDistance(getdisDistance() - 1);
+			else
+				setdisDistance(0);
+
+			setStun(2);
 			break;
 		case(GraphObject::left):
 			
@@ -89,8 +126,13 @@ void babbyGrasshopper::doSomething()
 			{
 				setDirection(disDir);
 				moveTo(newCo.X, newCo.Y);
+				setdisDistance(getdisDistance() - 1);
+				setmoved(true);
 			}
-			setdisDistance(getdisDistance() - 1);
+			else
+				setdisDistance(0);
+
+			setStun(2);
 			break;
 		case(GraphObject::right):
 			
@@ -99,24 +141,19 @@ void babbyGrasshopper::doSomething()
 			{
 				setDirection(disDir);
 				moveTo(newCo.X, newCo.Y);
+				setdisDistance(getdisDistance() - 1);
+				setmoved(true);
 			}
-			setdisDistance(getdisDistance() - 1);
+			else
+				setdisDistance(0);
+
+			setStun(2);
 			break;
 		default:
 			break;
 		}
 	}
-	else
-	{
-		setdisDistance(randDis(2, 10));
-		disDir = randDir();
-	}
 	
-	//set moved checking condition 
-	setmoved(true);
-
-	//lossing 1 hitpoint 
-	setHelath(currHealth() - 1);
 }
 
 void babbyGrasshopper::setdisDistance(int input)
@@ -124,10 +161,22 @@ void babbyGrasshopper::setdisDistance(int input)
 	disredDistance = input;
 }
 
+void babbyGrasshopper::setStun(int input)
+{
+	Stun = input;
+}
+
+
+
 
 int babbyGrasshopper::getdisDistance() const
 {
 	return disredDistance;
+}
+
+int babbyGrasshopper::getStun() const
+{
+	return Stun;
 }
 
 

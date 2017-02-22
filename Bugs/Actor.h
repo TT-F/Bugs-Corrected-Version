@@ -53,20 +53,21 @@ class babbyGrasshopper : public Actor //maybe change the base class to Grasshopp
 {
 public:
 	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
-		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
+		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld), Stun(2)
 	{};
 	virtual void doSomething();
 
 	//Mutator 
 	void setdisDistance(int input);
-	
+	void setStun(int input);
+
 	//Accessory 
 	int getdisDistance() const;
-	
+	int getStun() const;
 private:
 	int disredDistance;
-	
 	GraphObject::Direction disDir;
+	int Stun;
 };
 
 struct Cord
