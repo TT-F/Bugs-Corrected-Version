@@ -246,7 +246,7 @@ void babbyGrasshopper::doSomething()
 		return;
 	if (checksleeping())
 		return;
-	if (currHealth() >= 5700)
+	if (currHealth() >= 1600)
 	{
 		//turn into adult grasshopper 
 		//Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
