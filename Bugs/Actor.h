@@ -56,23 +56,17 @@ class insects :public Actor
 {
 public:
 	insects(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
-		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
+		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld), Stun(2)
 	{};
 	virtual void doSomething()=0;
-	//Mutator	
-	//Accessory 
-private:	
-};
-
-//baby grass hopper 
-class babbyGrasshopper : public insects //maybe change the base class to Grasshopper will be better 
-{
-public:
-	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
-		 insects(ID, sX, sY, sDire, depth, heSt, block, move, StWorld), Stun(2)
-	{};
-	virtual void doSomething();
-
+	//utility 
+	
+	bool checkhealth(); 
+	bool checksleeping();
+	bool eatfood();
+	bool randomsleep();
+	void checkandwalk();
+	
 	//Mutator 
 	void setdisDistance(int input);
 	void setStun(int input);
@@ -84,6 +78,28 @@ private:
 	int disredDistance;
 	GraphObject::Direction disDir;
 	int Stun;
+};
+
+//baby grass hopper 
+class babbyGrasshopper : public insects //maybe change the base class to Grasshopper will be better 
+{
+public:
+	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
+		 insects(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
+	{};
+	virtual void doSomething();
+
+private:
+	
+};
+//Adult Grasshopper 
+class adultGrasshopper : public insects
+{
+public:
+	adultGrasshopper(int ID, int sX, int sY, StudentWorld* StWorld) :
+		insects(ID, sX, sY, randDir(), 0, 1600, false, false, StWorld) {};
+	virtual void doSomething(); 
+private:
 };
 
 //food 
