@@ -244,15 +244,20 @@ void babbyGrasshopper::doSomething()
 
 	if (checkhealth())
 		return;
-	else if (checksleeping())
+	if (checksleeping())
 		return;
-	else if (currHealth() >= 1600)
+	if (currHealth() >= 5700)
 	{
 		//turn into adult grasshopper 
+		//Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
+		//std::cout << "Adult grasshopper";
+		//getStdW()->addActor(getX(), getY(), act);
+		//std::cout << " 000000xxx00000 Adult grasshopper" <<std::endl;
 		//produce 100 food (using an insects function)
-		/*std::cout << "Adult grasshopper";
+		getStdW()->addFood(getX(), getY() ,100);
+		
 		setalive(false);
-		return;*/
+		return;
 	}
 	//eat food 
 	if (eatfood())
@@ -266,6 +271,21 @@ void babbyGrasshopper::doSomething()
 //============================================================
 void adultGrasshopper::doSomething()
 {
+	//lossing 1 hitpoint 
+	setHelath(currHealth() - 1);
+
+	if (checkhealth())
+		return;
+	else if (checksleeping())
+		return;
+	//1/3 chance bite 
+	//else 1/10 chance to jump 
+
+	//eat food 
+	if (eatfood())
+		if (randomsleep())
+			return;
+	checkandwalk();
 }
 
 //============================================================

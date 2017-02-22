@@ -100,8 +100,8 @@ private:
 class adultGrasshopper : public insects
 {
 public:
-	adultGrasshopper(int ID, int sX, int sY, StudentWorld* StWorld) :
-		insects(ID, sX, sY, randDir(), 0, 1600, false, false, StWorld) {};
+	adultGrasshopper(int sX, int sY, StudentWorld* StWorld) :
+		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) {};
 	virtual void doSomething(); 
 private:
 };
