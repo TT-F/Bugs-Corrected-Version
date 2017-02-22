@@ -62,25 +62,51 @@ void babbyGrasshopper::doSomething()
 	oldCo.Y = getY();
 	Cord newCo = oldCo;
 	
-	//if (currHealth() <= 0)
-	//{
-	//	//return 
-	//}
-	//else 
-	if (Stun != 0)
+	if (currHealth() <= 0)
+	{
+		//produce 100 food (using an insects function) 
+		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
+			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(currHealth() + 100);
+		else
+			getStdW()->addFood(oldCo.X, oldCo.Y, 100);
+		setalive(false);
+		return;
+	}
+	else if (Stun != 0)
 	{
 		setStun(getStun() - 1);
 		return;
 	}
-	//else if (currHealth() >= 1600)
-	//{
-	//	//turn into adult grasshopper 
-	//	//return 
-	//}
+	else if (currHealth() >= 1600)
+	{
+		//turn into adult grasshopper 
+		//produce 100 food (using an insects function)
+		/*std::cout << "Adult grasshopper";
+		setalive(false);
+		return;*/
+	}
 	//eat food 
 	//if it eats food, it will have 50% go to sleep 
-	
-	//else
+	if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
+	{
+		int lefthealth = getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth();
+		std::cout << "food curreHealth " << lefthealth << std::endl;
+		if (lefthealth >= 200)
+			lefthealth = 200;
+		setHelath(currHealth() + lefthealth);
+		std::cout << "grass hopper curreHealth " << currHealth() << std::endl;
+		getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() - lefthealth);
+		if (getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() == 0)
+			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setalive(false);
+		int a = rand() % 2;
+		std::cout << "random # is " << a << std::endl;
+		if (a == 0)
+		{
+			setStun(2);
+			return;
+		}
+	}
+
 	{
 		if (getdisDistance() == 0)
 		{
@@ -203,6 +229,21 @@ GraphObject::Direction randDir()
 		return GraphObject::none;
 		break;
 	}
+}
+
+void Actor::setalive(bool input)
+{
+	alive = input;
+}
+
+bool Actor::getalive() const
+{
+	return alive; 
+}
+
+int Actor::whatamI() const
+{
+	return ID;
 }
 
 

@@ -1,8 +1,10 @@
 ﻿#include "StudentWorld.h"
 #include "Actor.h"
 #include "Field.h"
-#include <string>
+//#include <string>
 #include <iostream> 
+#include <sstream>
+#include <iomanip>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetDir)
@@ -44,8 +46,12 @@ int StudentWorld::init()
 			}
 			else if (item == Field::FieldItem::grasshopper)
 			{
-				Actor* Ptr = new babbyGrasshopper(IID_BABY_GRASSHOPPER, x, y, randDir(), 0, 500, false, false, this); //direction random IS THE POINTER USED CORRECTLY??
+				Actor* Ptr = new babbyGrasshopper(IID_BABY_GRASSHOPPER, x, y, randDir(), 0, 500, false, false, this); 
 				actorobjhld[x][y].push_front(Ptr);
+			}
+			else if (item == Field::FieldItem::food)
+			{
+				addFood(x, y, 6000);
 			}
 			//more if statements required to be implemented 
 		}
@@ -86,10 +92,42 @@ int StudentWorld::move()
 	resetmoved();
 
 	//responsible for disposing of(i.e., deleting) Actor that need to disappear during a given tick
+	for (int x = 0; x < VIEW_WIDTH;x++)
+	{
+		for (int y = 0; y < VIEW_HEIGHT;y++)
+		{
+			std::list<Actor*>::iterator ite = actorobjhld[x][y].begin();
+			while (ite != actorobjhld[x][y].end())
+			{
+				if (!(*ite)->getalive())
+				{
+					delete *ite;
+					ite = actorobjhld[x][y].erase(ite);
+				}			
+				else		
+					ite++;
+			}
+		}
+	}
+	//update the text 
+	setDisplayText();
 
-	//update status 
-
-	return 0;
+	//check if elaptick has reached 2000 
+	if (elaptick == 2000)
+	{
+		if (0) //false 
+		{
+			string winnername;
+			//get name from COMPILER 
+			setWinner(winnername);
+			return   GWSTATUS_PLAYER_WON; //GWSTATUS_ANT_WON; is not found in GameConsts 
+		}
+		else
+			return GWSTATUS_NO_WINNER;
+	}
+	
+	return GWSTATUS_CONTINUE_GAME;
+	
 }
 
 void StudentWorld::cleanUp()
@@ -100,16 +138,16 @@ void StudentWorld::cleanUp()
 		for (int y = 0; y < VIEW_HEIGHT;y++)
 		{
 			//freeing all Actor
-			for (std::list<Actor*>::iterator ite = actorobjhld[x][y].begin(); ite != actorobjhld[x][y].end(); ++ite)
+			for (std::list<Actor*>::iterator ite = actorobjhld[x][y].begin(); ite != actorobjhld[x][y].end();ite++)
 			{
 				delete *ite;
-				ite = actorobjhld[x][y].erase(ite);
+				//ite = actorobjhld[x][y].erase(ite);
 			}
 		}
 	}
 }
 
-bool StudentWorld::checkpebble(int x, int y)
+bool StudentWorld::checkpebble(int x, int y) //can be replaced 
 {
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); ++it)
 	{
@@ -120,10 +158,47 @@ bool StudentWorld::checkpebble(int x, int y)
 	}
 }
 
+bool StudentWorld::findwhatsthere(int x, int y, int ID) 
+{
+	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();)
+	{
+		if ((*it)->whatamI() == ID)
+			return true;
+		else
+			++it;
+	}
+	return false; 
+}
 
 void StudentWorld::updateTickCount()
 {
 	elaptick++;
+}
+
+void StudentWorld::setDisplayText()
+{
+	
+		int ticks = getCurrentTicks();
+		int antsAnt0 = 0, antsAnt1 = 0, antsAnt2 = 0, antsAnt3 = 0;
+		int winningAntNumber = 0;
+		//antsAnt0 = getNumberOfAntsForAnt(0);
+		//antsAnt1 = getNumberOfAntsForAnt(1);
+		//antsAnt2 = getNumberOfAntsForAnt(2);
+		//antsAnt3 = getNumberOfAntsForAnt(3);
+		//winningAntNumber = getWinningAntNumber();
+		// Create a string from your statistics, of the form:
+		// Ticks: 1134 - AmyAnt: 32 BillyAnt: 33 SuzieAnt*: 77 IgorAnt: 05
+		string s = displayFouritem(ticks,
+			antsAnt0,
+			antsAnt1,
+			antsAnt2,
+			antsAnt3,
+			winningAntNumber
+		);
+		// Finally, update the display text at the top of the screen with your
+		// newly created stats
+		setGameStatText(s); // calls our provided GameWorld::setGameStatText
+
 }
 
 void StudentWorld::resetmoved()
@@ -139,6 +214,37 @@ void StudentWorld::resetmoved()
 			}
 		}
 	}
+}
+
+void StudentWorld::addFood(int x, int y, int health)
+{
+	Actor *Ptr = new food(IID_FOOD, x, y, health, this);
+	actorobjhld[x][y].push_front(Ptr);
+}
+
+
+
+int StudentWorld::getCurrentTicks() const
+{
+	return elaptick;
+}
+
+Actor * StudentWorld::actor(int x, int y, int ID) 
+{
+	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();)
+		if ((*it)->whatamI() == ID)
+			return *it;
+	return nullptr;
+}
+
+string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa)
+{
+	string output;
+	ostringstream temp;
+	temp << "Ticks:";
+	temp << setw(5) << ticks;
+	output = temp.str();
+	return output;
 }
 
 

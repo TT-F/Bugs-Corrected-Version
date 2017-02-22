@@ -25,12 +25,23 @@ public:
 
 	virtual void cleanUp();
 
-	bool checkpebble(int x, int y);
+	bool checkpebble(int x, int y);  //can be replaced by the findwhatsthere function 
+
+	bool findwhatsthere(int x, int y, int ID);
 
 	void updateTickCount();
 
+	void setDisplayText();
 
 	void resetmoved();
+
+	void addFood(int x, int y, int health);
+	
+	int getCurrentTicks() const;
+
+	Actor* actor(int x, int y, int ID);
+
+	std::string displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa);
 
 private:
 	std::list<Actor*> actorobjhld[VIEW_WIDTH][VIEW_HEIGHT];
