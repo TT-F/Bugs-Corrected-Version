@@ -156,6 +156,7 @@ bool StudentWorld::checkpebble(int x, int y) //can be replaced
 		else
 			return false; 
 	}
+	return false; 
 }
 
 bool StudentWorld::findwhatsthere(int x, int y, int ID) 
@@ -222,7 +223,10 @@ void StudentWorld::addFood(int x, int y, int health)
 	actorobjhld[x][y].push_front(Ptr);
 }
 
-
+void StudentWorld::addActor(int x, int y, Actor * actor)
+{
+	actorobjhld[x][y].push_front(actor);
+}
 
 int StudentWorld::getCurrentTicks() const
 {

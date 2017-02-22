@@ -11,7 +11,7 @@ class Actor : public GraphObject
 {
 public:
 	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
-		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID)
+		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY)
 	{};
 	virtual ~Actor() {};
 	//mutator
@@ -19,6 +19,9 @@ public:
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
 	void setmoved(bool input);
 	void setalive(bool input);
+	void setX(int input);
+	void setY(int input);
+
 	//accesory 
 	int randDis(int s, int end);
 	bool isblocked() const;
@@ -36,7 +39,8 @@ private:
 	bool blocked;
 	bool alive;
 	int ID;
-
+	int sx;
+	int sy;
 };
 
 //pebble class 

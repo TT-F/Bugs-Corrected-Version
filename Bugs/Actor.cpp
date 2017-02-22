@@ -3,8 +3,9 @@
 #include <iostream>
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
-
-//base class 
+//============================================================
+//=                      base class                          =
+//============================================================
 
 void Actor::setHelath(int wantedHealth)
 {
@@ -16,11 +17,14 @@ void Actor::setmoved(bool input)
 	moved = input;
 }
 
-int Actor::randDis(int start, int end)
+void Actor::setalive(bool input)
 {
-	int a = rand() % (end-1) + start;
-	/*std::cout << "the random distance is " << a << std::endl;*/
-	return a;
+	alive = input;
+}
+
+bool Actor::getalive() const
+{
+	return alive;
 }
 
 bool Actor::isblocked() const
@@ -28,10 +32,36 @@ bool Actor::isblocked() const
 	return blocked;
 }
 
+bool Actor::ismoved() const
+{
+	return moved;
+}
 
 int Actor::currHealth() const
 {
 	return Health;
+}
+
+int Actor::whatamI() const
+{
+	return ID;
+}
+
+int Actor::randDis(int start, int end)
+{
+	int a = rand() % (end-1) + start;
+	/*std::cout << "the random distance is " << a << std::endl;*/
+	return a;
+}
+
+void Actor::setX(int input)
+{
+	sx = input;
+}
+
+void Actor::setY(int input)
+{
+	sy = input;
 }
 
 StudentWorld * Actor::getStdW() const
@@ -39,16 +69,9 @@ StudentWorld * Actor::getStdW() const
 	return m_world;
 }
 
-bool Actor::ismoved() const
-{
-	return moved;
-}
-
-//int Actor::whatamI() const
-//{
-//	return ID;
-//}
-
+//============================================================
+//=                      insects class                       =
+//============================================================
 
 bool insects::checkhealth()
 {
@@ -191,7 +214,6 @@ void insects::checkandwalk()
 	}
 }
 
-//insects base class 
 void insects::setdisDistance(int input)
 {
 	disredDistance = input;
@@ -212,8 +234,9 @@ int insects::getStun() const
 	return Stun;
 }
 
-//baby grass hopper 
-
+//============================================================
+//=                  babbygrasshopper class                  =
+//============================================================
 void babbyGrasshopper::doSomething()
 {
 	//lossing 1 hitpoint 
@@ -238,7 +261,16 @@ void babbyGrasshopper::doSomething()
 	checkandwalk();	
 }
 
+//============================================================
+//=                 addultgrasshopper class                  =
+//============================================================
+void adultGrasshopper::doSomething()
+{
+}
 
+//============================================================
+//=                 utility                                  =
+//============================================================
 GraphObject::Direction randDir()
 {
 	int a = rand() % 4;
@@ -263,21 +295,6 @@ GraphObject::Direction randDir()
 	}
 }
 
-void Actor::setalive(bool input)
-{
-	alive = input;
-}
 
-bool Actor::getalive() const
-{
-	return alive; 
-}
 
-int Actor::whatamI() const
-{
-	return ID;
-}
 
-void adultGrasshopper::doSomething()
-{
-}

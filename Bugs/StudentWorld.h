@@ -36,6 +36,8 @@ public:
 	void resetmoved();
 
 	void addFood(int x, int y, int health);
+
+	void addActor(int x, int y, Actor* actor);
 	
 	int getCurrentTicks() const;
 
