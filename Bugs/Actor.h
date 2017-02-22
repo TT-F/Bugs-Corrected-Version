@@ -13,6 +13,7 @@ public:
 	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
 		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move)
 	{};
+	virtual ~Actor() {};
 	//mutator
 	virtual void doSomething() = 0; //pure virtual function, since something can move other things cannot 
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
