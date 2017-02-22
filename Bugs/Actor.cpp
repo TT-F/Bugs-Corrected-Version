@@ -116,7 +116,7 @@ void babbyGrasshopper::doSomething()
 	setmoved(true);
 
 	//lossing 1 hitpoint 
-	//setHelath(currHealth() - 1);
+	setHelath(currHealth() - 1);
 }
 
 void babbyGrasshopper::setdisDistance(int input)
