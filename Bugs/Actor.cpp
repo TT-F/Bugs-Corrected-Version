@@ -49,6 +49,18 @@ int Actor::whatamI() const
 	return ID;
 }
 
+Actor* Actor::bite(int x, int y)
+{
+	if (getStdW()->isthereathingcanbebitten(x, y))
+	{
+		//std::cout << "let bite" << std::endl;
+		Actor* ptr = getStdW()->aRandthingcanbebitten(x, y);
+		ptr->setHelath(ptr->currHealth() - 50);
+		return ptr; 
+	}
+	return nullptr; 
+}
+
 int Actor::randDis(int start, int end)
 {
 	int a = rand() % (end-1) + start;
@@ -113,11 +125,11 @@ bool insects::eatfood()
 	if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 	{
 		int lefthealth = getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth();
-		std::cout << "food curreHealth " << lefthealth << std::endl;
+		//std::cout << "food curreHealth " << lefthealth << std::endl;
 		if (lefthealth >= 200)
 			lefthealth = 200;
 		setHelath(currHealth() + lefthealth);
-		std::cout << "grass hopper curreHealth " << currHealth() << std::endl;
+		//std::cout << "grass hopper curreHealth " << currHealth() << std::endl;
 		getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() - lefthealth);
 		if (getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() == 0)
 			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setalive(false);
@@ -310,12 +322,15 @@ void adultGrasshopper::doSomething()
 	{
 		//std::cout << "bite" << std::endl;
 		//if there are more than one enemy on this location 
-		if (getStdW()->isthereathingcanbebitten(getX(), getY()))
-		{
-			std::cout << "let bite" << std::endl;
-			Actor* ptr = getStdW()->aRandthingcanbebitten(getX(), getY());
-			ptr->setHelath(ptr->currHealth() - 50);
-		}
+		Actor* ptr = bite(getX(), getY());
+		if (ptr != nullptr)
+			if (randInt(1, 2) == 2)
+				if (ptr->whatamI() == IID_ADULT_GRASSHOPPER && !ptr->getselfID())
+				{
+					ptr->bite(getX(), getY());
+					//std::cout << "fan yao yi kou !!!!!!!!!!!!!!!!!" << std::endl;
+				}
+					
 	}
 	//else 1/10 chance to jump 
 	else if (randInt(1, 10) == 1)
@@ -335,6 +350,22 @@ void adultGrasshopper::doSomething()
 		if (randomsleep())
 			return;
 	checkandwalk();
+}
+
+//============================================================
+//=                  poison class                            =
+//============================================================
+void poison::doSomething()
+{
+}
+
+//============================================================
+//=                  Pool of water class                     =
+//============================================================
+void poolofWater::doSomething()
+{
+	//set insects over it to stun 
+
 }
 
 //============================================================
@@ -363,7 +394,5 @@ GraphObject::Direction randDir()
 		break;
 	}
 }
-
-
 
 

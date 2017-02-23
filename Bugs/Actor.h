@@ -26,7 +26,7 @@ public:
 		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false)
 	{};
 	virtual ~Actor() {};
-	//mutator
+	
 	virtual void doSomething() = 0; //pure virtual function, since something can move other things cannot 
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
 	void setmoved(bool input);
@@ -36,8 +36,9 @@ public:
 	void initselfID() { selfID = true; };
 	void removeselfID() { selfID = false; };
 	bool getselfID() { return selfID; };
+	Actor* bite(int x, int y);
 
-	//accesory 
+
 	int randDis(int s, int end);
 	bool isblocked() const;
 	int currHealth() const;
@@ -116,6 +117,7 @@ public:
 		 insects(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
 	{};
 	virtual void doSomething();
+	
 
 private:
 	
@@ -129,6 +131,7 @@ public:
 	adultGrasshopper(int sX, int sY, StudentWorld* StWorld) :
 		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) {};
 	virtual void doSomething(); 
+	
 private:
 };
 
@@ -145,7 +148,43 @@ public:
 	
 };
 
+//============================================================
+//=                  trap class                              =
+//============================================================
+class trap : public Actor
+{
+public: 
+	trap(int ID, int sX, int sY, StudentWorld* StWorld) :
+		Actor(ID, sX, sY, GraphObject::right, 2, 10000, false, false, StWorld)
+	{};
+	virtual void doSomething() {};
+	virtual void setStun() {}; 
+};
 
+//============================================================
+//=                  poison class                            =
+//============================================================
+class poison :public trap
+{
+public:
+	poison(int sX, int sY, StudentWorld* stw) :
+		trap(IID_POISON, sX, sY, stw)
+	{};
+	virtual void doSomething();
+};
+
+//============================================================
+//=                  Pool of water class                     =
+//============================================================
+class poolofWater : public trap
+{
+public:
+	poolofWater(int sX, int sY, StudentWorld* stw) :
+		trap(IID_WATER_POOL, sX, sY, stw)
+	{};
+	virtual void doSomething();
+
+};
 
 
 
