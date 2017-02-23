@@ -373,6 +373,18 @@ void adultGrasshopper::doSomething()
 //============================================================
 void poison::doSomething()
 {
+	vector<Actor*> hldr;
+	hldr = getStdW()->allcanbetrap(getX(), getY());
+	int size = hldr.size();
+	
+	for (int walk = 0; walk < size; walk++)
+	{
+		//cout << hldr[walk]->currHealth()<< "bugs health before pool" << endl;
+		hldr[walk]->setHelath(hldr[walk]->currHealth() - 150);
+		//cout << hldr[walk]->currHealth() << "bugs health after pool" << endl;
+	}
+		
+	
 }
 
 //============================================================
