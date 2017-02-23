@@ -4,8 +4,20 @@
 #include "GraphObject.h"
 #include "StudentWorld.h"
 
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
+//============================================================
+//=                      utility                             =
+//============================================================
 GraphObject::Direction randDir();
+struct Cord
+{
+	int X;
+	int Y;
+};
+
+//============================================================
+//=                      base class                          =
+//============================================================
+
 
 class Actor : public GraphObject
 {
@@ -43,7 +55,9 @@ private:
 	int sy;
 };
 
-//pebble class 
+//============================================================
+//=                     pebble class                         =
+//============================================================
 class pebble : public Actor
 {
 public:
@@ -54,8 +68,9 @@ public:
 private:
 
 };
-
-//Things that can move (INSECTS)
+//============================================================
+//=                      insects class                       =
+//============================================================
 class insects :public Actor
 {
 public:
@@ -74,6 +89,7 @@ public:
 	//Mutator 
 	void setdisDistance(int input);
 	void setStun(int input);
+	void bitother(int ID, int x, int y, int input);
 
 	//Accessory 
 	int getdisDistance() const;
@@ -84,7 +100,9 @@ private:
 	int Stun;
 };
 
-//baby grass hopper 
+//============================================================
+//=                  babbygrasshopper class                  =
+//============================================================
 class babbyGrasshopper : public insects //maybe change the base class to Grasshopper will be better 
 {
 public:
@@ -96,7 +114,9 @@ public:
 private:
 	
 };
-//Adult Grasshopper 
+//============================================================
+//=                 addultgrasshopper class                  =
+//============================================================
 class adultGrasshopper : public insects
 {
 public:
@@ -106,7 +126,9 @@ public:
 private:
 };
 
-//food 
+//============================================================
+//=                  food class                              =
+//============================================================
 class food : public Actor
 {
 public:
@@ -117,11 +139,7 @@ public:
 	
 };
 
-struct Cord
-{
-	int X;
-	int Y;
-};
+
 
 
 

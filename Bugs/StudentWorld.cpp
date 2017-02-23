@@ -1,7 +1,7 @@
 ﻿#include "StudentWorld.h"
 #include "Actor.h"
 #include "Field.h"
-//#include <string>
+#include <string>
 #include <iostream> 
 #include <sstream>
 #include <iomanip>

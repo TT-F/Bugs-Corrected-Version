@@ -2,6 +2,7 @@
 #include "StudentWorld.h"
 #include <iostream>
 
+
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 //============================================================
 //=                      base class                          =
@@ -224,6 +225,12 @@ void insects::setStun(int input)
 	Stun = input;
 }
 
+void insects::bitother(int ID, int x, int y, int input)
+{
+	int curhp = getStdW()->actor(x, y, ID)->currHealth();
+	getStdW()->actor(x, y, ID)->setHelath(curhp - input);
+}
+
 int insects::getdisDistance() const
 {
 	return disredDistance;
@@ -252,17 +259,12 @@ void babbyGrasshopper::doSomething()
 		oldCo.X = getX();
 		oldCo.Y = getY();
 		Cord newCo = oldCo;
-		//turn into adult grasshopper 
 		Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
-		//std::cout << "Adult grasshopper";
 		getStdW()->addActor(getX(), getY(), act);
-		//std::cout << " 000000xxx00000 Adult grasshopper" <<std::endl;
-		//produce 100 food (using an insects function)
 		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
-			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(currHealth() + 100);
+			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() + 100);
 		else
 			getStdW()->addFood(oldCo.X, oldCo.Y, 100);
-		
 		setalive(false);
 		return;
 	}
@@ -286,6 +288,11 @@ void adultGrasshopper::doSomething()
 	else if (checksleeping())
 		return;
 	//1/3 chance bite 
+	if (randInt(1, 3) == 1)
+	{
+		//if there are more than one enemy on this location 
+		
+	}
 	//else 1/10 chance to jump 
 
 	//eat food 
