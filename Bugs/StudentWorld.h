@@ -37,13 +37,15 @@ public:
 
 	void addFood(int x, int y, int health);
 
-	//void addadultgrasshoper(int x, int y);
-
 	void addActor(int x, int y, Actor* actor);
 	
 	int getCurrentTicks() const;
 
+	bool isthereathingcanbebitten(int x, int y);
+
 	Actor* actor(int x, int y, int ID);
+
+	Actor* aRandthingcanbebitten(int x, int y);
 
 	std::string displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa);
 

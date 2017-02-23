@@ -248,7 +248,7 @@ void babbyGrasshopper::doSomething()
 {
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
-
+	
 	if (checkhealth())
 		return;
 	if (checksleeping())
@@ -282,7 +282,7 @@ void adultGrasshopper::doSomething()
 {
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
-
+	initselfID(); //initial selfID, so it cannot bite itself
 	if (checkhealth())
 		return;
 	else if (checksleeping())
@@ -290,10 +290,17 @@ void adultGrasshopper::doSomething()
 	//1/3 chance bite 
 	if (randInt(1, 3) == 1)
 	{
+		//std::cout << "bite" << std::endl;
 		//if there are more than one enemy on this location 
-		
+		if (getStdW()->isthereathingcanbebitten(getX(), getY()))
+		{
+			//std::cout << "let bite" << std::endl;
+			Actor* ptr = getStdW()->aRandthingcanbebitten(getX(), getY());
+			ptr->setHelath(ptr->currHealth() - 50);
+		}
 	}
 	//else 1/10 chance to jump 
+
 
 	//eat food 
 	if (eatfood())

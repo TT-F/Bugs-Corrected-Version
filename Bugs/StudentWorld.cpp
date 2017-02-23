@@ -5,6 +5,7 @@
 #include <iostream> 
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetDir)
@@ -75,6 +76,7 @@ int StudentWorld::move()
 					if (!(*ite)->ismoved())
 					{
 						(*ite)->doSomething();
+						(*ite)->removeselfID(); //remove selfID so it can be bitten 
 						(*ite)->setmoved(true);
 						if ((*ite)->getX() != x || (*ite)->getY() != y)
 						{
@@ -223,12 +225,6 @@ void StudentWorld::addFood(int x, int y, int health)
 	actorobjhld[x][y].push_front(Ptr);
 }
 
-//void StudentWorld::addadultgrasshoper(int x, int y)
-//{
-//	Actor *Ptr = new adultGrasshopper(x, y, this);
-//	actorobjhld[x][y].push_front(Ptr);
-//}
-
 void StudentWorld::addActor(int x, int y, Actor * actor)
 {
 	actorobjhld[x][y].push_front(actor);
@@ -239,6 +235,14 @@ int StudentWorld::getCurrentTicks() const
 	return elaptick;
 }
 
+bool StudentWorld::isthereathingcanbebitten(int x, int y)
+{
+	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();it++)
+		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER) && !(*it)->getselfID())
+			return true;
+	return false;
+}
+
 Actor * StudentWorld::actor(int x, int y, int ID) 
 {
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();)
@@ -247,6 +251,17 @@ Actor * StudentWorld::actor(int x, int y, int ID)
 		else
 			it++;
 	return nullptr;
+}
+
+Actor * StudentWorld::aRandthingcanbebitten(int x, int y)
+{
+	vector<Actor*> temp_hld;
+	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); it++)
+		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER) && !(*it)->getselfID())
+			temp_hld.push_back(*it);
+	int size = temp_hld.size();
+	int pos = randInt(0,size);
+	return temp_hld[pos];
 }
 
 string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa)

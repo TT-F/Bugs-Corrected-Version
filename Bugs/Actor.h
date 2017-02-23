@@ -23,7 +23,7 @@ class Actor : public GraphObject
 {
 public:
 	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
-		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY)
+		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false)
 	{};
 	virtual ~Actor() {};
 	//mutator
@@ -33,6 +33,9 @@ public:
 	void setalive(bool input);
 	void setX(int input);
 	void setY(int input);
+	void initselfID() { selfID = true; };
+	void removeselfID() { selfID = false; };
+	bool getselfID() { return selfID; };
 
 	//accesory 
 	int randDis(int s, int end);
@@ -46,7 +49,7 @@ public:
 private:
 	int Health;
 	StudentWorld* m_world;
-
+	bool selfID;
 	bool moved;
 	bool blocked;
 	bool alive;
@@ -86,10 +89,12 @@ public:
 	bool randomsleep();
 	void checkandwalk();
 	
+	
 	//Mutator 
 	void setdisDistance(int input);
 	void setStun(int input);
 	void bitother(int ID, int x, int y, int input);
+	
 
 	//Accessory 
 	int getdisDistance() const;
@@ -98,6 +103,7 @@ private:
 	int disredDistance;
 	GraphObject::Direction disDir;
 	int Stun;
+	
 };
 
 //============================================================
