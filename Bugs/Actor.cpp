@@ -1,6 +1,7 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 #include <iostream>
+#include <cmath>
 
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -215,6 +216,23 @@ void insects::checkandwalk()
 	}
 }
 
+Cord insects::radiusten()
+{
+	Cord mvCo;
+	
+	mvCo.X = 0;
+	mvCo.Y = 0;
+	mvCo.X = randInt(1, 10);
+	mvCo.Y = randInt(1, 10);
+	if (randInt(0, 1) == 1)
+		mvCo.X = mvCo.X*(-1);
+	if (randInt(0, 1) == 1)
+		mvCo.Y = mvCo.Y*(-1);
+	if ( pow(mvCo.X, 2)+ (mvCo.Y, 2) > 100)
+		mvCo = radiusten();
+	return mvCo;
+}
+
 void insects::setdisDistance(int input)
 {
 	disredDistance = input;
@@ -294,13 +312,23 @@ void adultGrasshopper::doSomething()
 		//if there are more than one enemy on this location 
 		if (getStdW()->isthereathingcanbebitten(getX(), getY()))
 		{
-			//std::cout << "let bite" << std::endl;
+			std::cout << "let bite" << std::endl;
 			Actor* ptr = getStdW()->aRandthingcanbebitten(getX(), getY());
 			ptr->setHelath(ptr->currHealth() - 50);
 		}
 	}
 	//else 1/10 chance to jump 
-
+	else if (randInt(1, 10) == 1)
+	{	
+			Cord newloc = radiusten();
+			while (!getStdW()->isthelocationjumpable(getX()+newloc.X, getY()+newloc.Y))
+				newloc = radiusten();
+			//move to new location 
+			//std::cout << "aha  it moved ========================================" << std::endl;
+			moveTo(getX()+newloc.X, getY()+newloc.Y);
+			setStun(2);
+			return;
+	}
 
 	//eat food 
 	if (eatfood())

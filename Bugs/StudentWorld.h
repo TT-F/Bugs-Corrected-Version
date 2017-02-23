@@ -43,6 +43,8 @@ public:
 
 	bool isthereathingcanbebitten(int x, int y);
 
+	bool isthelocationjumpable(int x, int y);
+
 	Actor* actor(int x, int y, int ID);
 
 	Actor* aRandthingcanbebitten(int x, int y);

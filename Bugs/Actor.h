@@ -88,7 +88,7 @@ public:
 	bool eatfood();
 	bool randomsleep();
 	void checkandwalk();
-	
+	Cord radiusten();
 	
 	//Mutator 
 	void setdisDistance(int input);
