@@ -49,6 +49,8 @@ public:
 
 	Actor* aRandthingcanbebitten(int x, int y);
 
+	std::vector<Actor*> allcanbetrap(int x, int y);
+
 	std::string displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa);
 
 private:

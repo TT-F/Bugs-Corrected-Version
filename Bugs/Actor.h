@@ -23,7 +23,7 @@ class Actor : public GraphObject
 {
 public:
 	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
-		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false)
+		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false), isStun(false), isPosion(false)
 	{};
 	virtual ~Actor() {};
 	
@@ -37,8 +37,14 @@ public:
 	void removeselfID() { selfID = false; };
 	bool getselfID() { return selfID; };
 	Actor* bite(int x, int y);
+	void setStun(int input);
 
+	void letStun(bool input);
+	void letPoison(bool input);
+	bool istStun() const { return isStun; };
+	bool istPosion() const { return isPosion; };
 
+	bool checksleeping();
 	int randDis(int s, int end);
 	bool isblocked() const;
 	int currHealth() const;
@@ -46,6 +52,9 @@ public:
 	bool ismoved() const;
 	bool getalive() const;
 	int whatamI() const;
+	int getStun() const;
+	
+	
 
 private:
 	int Health;
@@ -57,6 +66,9 @@ private:
 	int ID;
 	int sx;
 	int sy;
+	int Stun;
+	bool isStun;
+	bool isPosion;
 };
 
 //============================================================
@@ -79,13 +91,15 @@ class insects :public Actor
 {
 public:
 	insects(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
-		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld), Stun(2)
-	{};
+		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
+	{
+		setStun(2);
+	};
 	virtual void doSomething()=0;
 	//utility 
 	
 	bool checkhealth(); 
-	bool checksleeping();
+	
 	bool eatfood();
 	bool randomsleep();
 	void checkandwalk();
@@ -93,17 +107,17 @@ public:
 	
 	//Mutator 
 	void setdisDistance(int input);
-	void setStun(int input);
+	
 	void bitother(int ID, int x, int y, int input);
 	
 
 	//Accessory 
 	int getdisDistance() const;
-	int getStun() const;
+	
 private:
 	int disredDistance;
 	GraphObject::Direction disDir;
-	int Stun;
+	
 	
 };
 
@@ -158,7 +172,8 @@ public:
 		Actor(ID, sX, sY, GraphObject::right, 2, 10000, false, false, StWorld)
 	{};
 	virtual void doSomething() {};
-	virtual void setStun() {}; 
+	
+private:
 };
 
 //============================================================

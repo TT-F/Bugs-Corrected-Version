@@ -54,6 +54,16 @@ int StudentWorld::init()
 			{
 				addFood(x, y, 6000);
 			}
+			else if (item == Field::poison)
+			{
+				Actor* ptr = new poison(x, y, this);
+				actorobjhld[x][y].push_back(ptr);
+			}
+			else if (item == Field::water)
+			{
+				Actor* ptr = new poolofWater(x, y, this);
+				actorobjhld[x][y].push_back(ptr);
+			}
 			//more if statements required to be implemented 
 		}
 	}
@@ -230,21 +240,6 @@ void StudentWorld::addActor(int x, int y, Actor * actor)
 	actorobjhld[x][y].push_front(actor);
 }
 
-//void StudentWorld::jump(int oldX, int oldY)
-//{
-//	std::list<Actor*>::iterator ite = actorobjhld[oldX][oldY].begin();
-//	while (ite != actorobjhld[oldX][oldY].end())
-//	{
-//		if ((*ite)->getX() != oldX || (*ite)->getY() != oldY)
-//		{
-//			actorobjhld[(*ite)->getX()][(*ite)->getY()].push_back(*ite);
-//			ite = actorobjhld[oldX][oldY].erase(ite);
-//		}
-//		else ite++;
-//	}
-//
-//}
-
 int StudentWorld::getCurrentTicks() const
 {
 	return elaptick;
@@ -289,6 +284,15 @@ Actor * StudentWorld::aRandthingcanbebitten(int x, int y)
 	int size = temp_hld.size();
 	int pos = randInt(0,size-1);
 	return temp_hld[pos];
+}
+
+std::vector<Actor*> StudentWorld::allcanbetrap(int x, int y)
+{
+	vector<Actor*> temp_hld;
+	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); it++)
+		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER))
+			temp_hld.push_back(*it);
+	return temp_hld;
 }
 
 string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, int wa)

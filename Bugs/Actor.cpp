@@ -2,7 +2,8 @@
 #include "StudentWorld.h"
 #include <iostream>
 #include <cmath>
-
+#include <vector>
+using namespace std;
 
 // Students:  Add code to this file (if you wish), Actor.h, StudentWorld.h, and StudentWorld.cpp
 //============================================================
@@ -39,6 +40,16 @@ bool Actor::ismoved() const
 	return moved;
 }
 
+bool Actor::checksleeping()
+{
+	if (getStun() != 0)
+	{
+		setStun(getStun() - 1);
+		return true;
+	}
+	return false;
+}
+
 int Actor::currHealth() const
 {
 	return Health;
@@ -47,6 +58,11 @@ int Actor::currHealth() const
 int Actor::whatamI() const
 {
 	return ID;
+}
+
+int Actor::getStun() const
+{
+	return Stun;
 }
 
 Actor* Actor::bite(int x, int y)
@@ -78,6 +94,21 @@ void Actor::setY(int input)
 	sy = input;
 }
 
+void Actor::setStun(int input)
+{
+	Stun = input;
+}
+
+void Actor::letStun(bool input)
+{
+	isStun = input;
+}
+
+void Actor::letPoison(bool input)
+{
+	isPosion = input;
+}
+
 StudentWorld * Actor::getStdW() const
 {
 	return m_world;
@@ -101,16 +132,6 @@ bool insects::checkhealth()
 		else
 			getStdW()->addFood(oldCo.X, oldCo.Y, 100);
 		setalive(false);
-		return true;
-	}
-	return false;
-}
-
-bool insects::checksleeping()
-{
-	if (getStun() != 0)
-	{
-		setStun(getStun() - 1);
 		return true;
 	}
 	return false;
@@ -152,6 +173,7 @@ bool insects::randomsleep()
 
 void insects::checkandwalk()
 {
+	letStun(false);//once it can move, let it can be stuned 
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
@@ -250,11 +272,6 @@ void insects::setdisDistance(int input)
 	disredDistance = input;
 }
 
-void insects::setStun(int input)
-{
-	Stun = input;
-}
-
 void insects::bitother(int ID, int x, int y, int input)
 {
 	int curhp = getStdW()->actor(x, y, ID)->currHealth();
@@ -264,11 +281,6 @@ void insects::bitother(int ID, int x, int y, int input)
 int insects::getdisDistance() const
 {
 	return disredDistance;
-}
-
-int insects::getStun() const
-{
-	return Stun;
 }
 
 //============================================================
@@ -353,6 +365,10 @@ void adultGrasshopper::doSomething()
 }
 
 //============================================================
+//=                  trap class                              =
+//============================================================
+
+//============================================================
 //=                  poison class                            =
 //============================================================
 void poison::doSomething()
@@ -365,6 +381,20 @@ void poison::doSomething()
 void poolofWater::doSomething()
 {
 	//set insects over it to stun 
+	vector<Actor*> hldr; 
+	hldr = getStdW()->allcanbetrap(getX(), getY());
+	int size = hldr.size();
+	for (int walk = 0; walk < size; walk++)
+	{
+		if (!hldr[walk]->istStun())
+		{
+			//cout << hldr[walk]->getStun() << "bugs health before pool" << endl;
+			hldr[walk]->setStun(hldr[walk]->getStun() + 2);
+			hldr[walk]->letStun(true);
+			//cout << hldr[walk]->getStun() << "bugs health after pool" << endl;
+		}
+		//cout << "let it go" << endl;
+	}
 
 }
 
