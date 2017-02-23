@@ -37,6 +37,8 @@ public:
 
 	void addFood(int x, int y, int health);
 
+	//void addadultgrasshoper(int x, int y);
+
 	void addActor(int x, int y, Actor* actor);
 	
 	int getCurrentTicks() const;

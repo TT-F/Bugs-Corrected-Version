@@ -223,6 +223,12 @@ void StudentWorld::addFood(int x, int y, int health)
 	actorobjhld[x][y].push_front(Ptr);
 }
 
+//void StudentWorld::addadultgrasshoper(int x, int y)
+//{
+//	Actor *Ptr = new adultGrasshopper(x, y, this);
+//	actorobjhld[x][y].push_front(Ptr);
+//}
+
 void StudentWorld::addActor(int x, int y, Actor * actor)
 {
 	actorobjhld[x][y].push_front(actor);
@@ -238,6 +244,8 @@ Actor * StudentWorld::actor(int x, int y, int ID)
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();)
 		if ((*it)->whatamI() == ID)
 			return *it;
+		else
+			it++;
 	return nullptr;
 }
 

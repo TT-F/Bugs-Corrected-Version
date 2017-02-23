@@ -248,13 +248,20 @@ void babbyGrasshopper::doSomething()
 		return;
 	if (currHealth() >= 1600)
 	{
+		Cord oldCo;
+		oldCo.X = getX();
+		oldCo.Y = getY();
+		Cord newCo = oldCo;
 		//turn into adult grasshopper 
-		//Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
+		Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
 		//std::cout << "Adult grasshopper";
-		//getStdW()->addActor(getX(), getY(), act);
+		getStdW()->addActor(getX(), getY(), act);
 		//std::cout << " 000000xxx00000 Adult grasshopper" <<std::endl;
 		//produce 100 food (using an insects function)
-		getStdW()->addFood(getX(), getY() ,100);
+		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
+			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(currHealth() + 100);
+		else
+			getStdW()->addFood(oldCo.X, oldCo.Y, 100);
 		
 		setalive(false);
 		return;
