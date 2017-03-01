@@ -429,6 +429,24 @@ void Ant::doSomething()
 		return;
 	if (checksleeping())
 		return;
+	Compiler::Command cmd;
+	for (int i = 0; i < 10; i++)
+	{
+		if (!m_compiler->getCommand(ic, cmd))
+		{
+			setalive(false);
+			return;
+		}
+
+		switch (cmd.opcode)
+		{
+		case Compiler::moveForward:
+
+			break;
+		default:
+			break;
+		}
+	}
 
 }
 //============================================================

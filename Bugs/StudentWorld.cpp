@@ -79,7 +79,7 @@ int StudentWorld::init()
 				Actor* ptr = new poolofWater(x, y, this);
 				actorobjhld[x][y].push_back(ptr);
 			}
-			/*else if (item == Field::anthill0)
+			else if (item == Field::anthill0)
 			{
 				if (n_player > 0)
 				{
@@ -110,7 +110,7 @@ int StudentWorld::init()
 					Actor* ptr = new Anthill(x, y, 4, compilerForEntrant[3], this);
 					actorobjhld[x][y].push_back(ptr);
 				}
-			}*/
+			}
 			//more if statements required to be implemented 
 		}
 	}
@@ -438,7 +438,7 @@ string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, 
 		if (i == getWinningAntNumber())
 			output += '*';
 
-		output += '*';
+		output += (": ");
 		ostringstream count;
 		count.fill('0');
 		switch (i)
@@ -458,7 +458,7 @@ string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, 
 		default:
 			break;
 		}
-		output += (count.str() + " ");
+		output += (count.str() + "  ");
 	}
 
 	

@@ -237,6 +237,7 @@ public:
 private:
 	int colNum;
 	Compiler* m_compiler;
+	int ic = 0;
 };
 
 //============================================================
