@@ -3,6 +3,7 @@
 
 #include "GameWorld.h"
 #include "GameConstants.h"
+#include "Compiler.h"
 #include <string>
 #include <list>
 
@@ -43,7 +44,11 @@ public:
 
 	void decre_n_ant_x(int col);
 	
-	int getCurrentTicks() const;
+	int getCurrentTicks() const; 
+
+	int getNumberOfAntsForAnt(int input) const;
+
+	int  getWinningAntNumber() const;
 
 	bool isthereathingcanbebitten(int x, int y);
 
@@ -59,11 +64,14 @@ public:
 
 private:
 	std::list<Actor*> actorobjhld[VIEW_WIDTH][VIEW_HEIGHT];
+	Compiler *compilerForEntrant[4];
 	int elaptick = 0;
+	int n_ant[4];
 	int n_ant_0 = 0;
 	int n_ant_1 = 0;
 	int n_ant_2 = 0;
 	int n_ant_3 = 0;
+	int n_player = 0;
 
 };
 

@@ -1,6 +1,7 @@
 ﻿#include "StudentWorld.h"
 #include "Actor.h"
 #include "Field.h"
+#include "Compiler.h"
 #include <string>
 #include <iostream> 
 #include <sstream>
@@ -22,6 +23,20 @@ StudentWorld:: ~StudentWorld()
 
 int StudentWorld::init()
 {
+	
+	std::vector<string> fileNames = getFilenamesOfAntPrograms();
+	for (unsigned i = 0; i < fileNames.size(); i++)
+	{
+		std::string error;
+		compilerForEntrant[i] = new Compiler;
+		if (!compilerForEntrant[i]->compile(fileNames[i], error))
+		{
+			setError(fileNames[i] + " " + error);
+			return GWSTATUS_LEVEL_ERROR;
+		}
+		n_player++;
+	}
+
 
 	//loading field 
 	Field f;
@@ -64,9 +79,44 @@ int StudentWorld::init()
 				Actor* ptr = new poolofWater(x, y, this);
 				actorobjhld[x][y].push_back(ptr);
 			}
+			/*else if (item == Field::anthill0)
+			{
+				if (n_player > 0)
+				{
+					Actor* ptr = new Anthill(x, y, 0, compilerForEntrant[0], this);
+					actorobjhld[x][y].push_back(ptr);
+				}
+			}
+			else if (item == Field::anthill1)
+			{
+				if (n_player > 1)
+				{
+					Actor* ptr = new Anthill(x, y, 1, compilerForEntrant[1], this);
+					actorobjhld[x][y].push_back(ptr);
+				}
+			}
+			else if (item == Field::anthill2)
+			{
+				if (n_player > 2)
+				{
+					Actor* ptr = new Anthill(x, y, 2, compilerForEntrant[2], this);
+					actorobjhld[x][y].push_back(ptr);
+				}
+			}
+			else if (item == Field::anthill3)
+			{
+				if (n_player > 3)
+				{
+					Actor* ptr = new Anthill(x, y, 4, compilerForEntrant[3], this);
+					actorobjhld[x][y].push_back(ptr);
+				}
+			}*/
 			//more if statements required to be implemented 
 		}
 	}
+	
+
+
 	return GWSTATUS_CONTINUE_GAME;
 }
 
@@ -194,11 +244,11 @@ void StudentWorld::setDisplayText()
 		int ticks = getCurrentTicks();
 		int antsAnt0 = 0, antsAnt1 = 0, antsAnt2 = 0, antsAnt3 = 0;
 		int winningAntNumber = 0;
-		//antsAnt0 = getNumberOfAntsForAnt(0);
-		//antsAnt1 = getNumberOfAntsForAnt(1);
-		//antsAnt2 = getNumberOfAntsForAnt(2);
-		//antsAnt3 = getNumberOfAntsForAnt(3);
-		//winningAntNumber = getWinningAntNumber();
+		antsAnt0 = getNumberOfAntsForAnt(0);
+		antsAnt1 = getNumberOfAntsForAnt(1);
+		antsAnt2 = getNumberOfAntsForAnt(2);
+		antsAnt3 = getNumberOfAntsForAnt(3);
+		winningAntNumber = getWinningAntNumber();
 		// Create a string from your statistics, of the form:
 		// Ticks: 1134 - AmyAnt: 32 BillyAnt: 33 SuzieAnt*: 77 IgorAnt: 05
 		string s = displayFouritem(ticks,
@@ -210,7 +260,7 @@ void StudentWorld::setDisplayText()
 		);
 		// Finally, update the display text at the top of the screen with your
 		// newly created stats
-		setGameStatText(s); // calls our provided GameWorld::setGameStatText
+		setGameStatText(s); // calls our provide GameWorld::setGameStatText
 
 }
 
@@ -287,6 +337,43 @@ int StudentWorld::getCurrentTicks() const
 	return elaptick;
 }
 
+int StudentWorld::getNumberOfAntsForAnt(int input) const
+{
+	switch (input)
+	{
+	case(0):
+		return n_ant_0;
+		break;
+	case(1):
+		return n_ant_1;
+		break;
+	case(2):
+		return n_ant_2;
+		break;
+	case(3):
+		return n_ant_3;
+		break;
+	default:
+		return -1;
+		break;
+	}
+}
+
+int StudentWorld::getWinningAntNumber() const
+{
+	int win = -1;
+	int maxhld = 0;
+	for (int i = 0;i < n_player;i++)
+	{
+		if (getNumberOfAntsForAnt(i) > maxhld)
+		{
+			win = i;
+			maxhld = getNumberOfAntsForAnt(i);
+		}
+	}
+	return win;
+}
+
 bool StudentWorld::isthereathingcanbebitten(int x, int y)
 {
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();it++)
@@ -342,8 +429,39 @@ string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, 
 	string output;
 	ostringstream temp;
 	temp << "Ticks:";
-	temp << setw(5) << ticks;
+	temp << setw(5) << 2000-ticks;
+	temp << " - ";
 	output = temp.str();
+	for (int i = 0; i < n_player;i++)
+	{
+		output += (compilerForEntrant[i]->getColonyName());
+		if (i == getWinningAntNumber())
+			output += '*';
+
+		output += '*';
+		ostringstream count;
+		count.fill('0');
+		switch (i)
+		{
+		case(0):
+			count << setw(2) << n_ant_0;
+			break;
+		case(1):
+			count << setw(2) << n_ant_1;
+			break;
+		case(2):
+			count << setw(2) << n_ant_2;
+			break;
+		case(3):
+			count << setw(2) << n_ant_3;
+			break;
+		default:
+			break;
+		}
+		output += (count.str() + " ");
+	}
+
+	
 	return output;
 }
 
