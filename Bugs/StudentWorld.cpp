@@ -240,6 +240,48 @@ void StudentWorld::addActor(int x, int y, Actor * actor)
 	actorobjhld[x][y].push_front(actor);
 }
 
+void StudentWorld::incre_n_ant_x(int col)
+{
+	switch (col)
+	{
+	case(0):
+		n_ant_0++;
+		break;
+	case(1):
+		n_ant_1++;
+		break;
+	case(2):
+		n_ant_2++;
+		break;
+	case(3):
+		n_ant_3++;
+		break;
+	default:
+		break;
+	}
+}
+
+void StudentWorld::decre_n_ant_x(int col)
+{
+	switch (col)
+	{
+	case(0):
+		n_ant_0--;
+		break;
+	case(1):
+		n_ant_1--;
+		break;
+	case(2):
+		n_ant_2--;
+		break;
+	case(3):
+		n_ant_3--;
+		break;
+	default:
+		break;
+	}
+}
+
 int StudentWorld::getCurrentTicks() const
 {
 	return elaptick;

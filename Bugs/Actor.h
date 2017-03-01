@@ -3,6 +3,11 @@
 
 #include "GraphObject.h"
 #include "StudentWorld.h"
+#include "Compiler.h"
+
+//Notes========================================
+// remeber to add virtual destructor 
+//=============================================
 
 //============================================================
 //=                      utility                             =
@@ -17,7 +22,6 @@ struct Cord
 //============================================================
 //=                      base class                          =
 //============================================================
-
 
 class Actor : public GraphObject
 {
@@ -93,7 +97,7 @@ public:
 	insects(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
 		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
 	{
-		setStun(2);
+		
 	};
 	virtual void doSomething()=0;
 	//utility 
@@ -129,7 +133,9 @@ class babbyGrasshopper : public insects //maybe change the base class to Grassho
 public:
 	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
 		 insects(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
-	{};
+	{
+		setStun(2);
+	};
 	virtual void doSomething();
 	
 
@@ -143,7 +149,9 @@ class adultGrasshopper : public insects
 {
 public:
 	adultGrasshopper(int sX, int sY, StudentWorld* StWorld) :
-		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) {};
+		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) {
+		setStun(2);
+	};
 	virtual void doSomething(); 
 	
 private:
@@ -201,6 +209,52 @@ public:
 
 };
 
+//============================================================
+//=                 Pheromone class                          =
+//============================================================
+class pheromone : public Actor
+{
+public:
+	pheromone(int ID, int sx, int sy, StudentWorld* stw):
+		Actor(ID, sx, sy, GraphObject::right, 2,256,false,false,stw )
+	{};
+	virtual void doSomething();
+};
+
+//============================================================
+//=                     Ant   class                          =
+//============================================================
+class Ant : public insects
+{
+public:
+	Ant(int ID, int colN, int sx, int sy, Compiler* compiler, StudentWorld*stw) :
+		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw), colNum(colN), m_compiler(compiler)
+	{};
+	virtual void doSomething();
+	int getColN() { return colNum; };
+
+
+private:
+	int colNum;
+	Compiler* m_compiler;
+};
+
+//============================================================
+//=                   Anthill class                          =
+//============================================================
+class Anthill : public Actor //need passing in a Compiler Object 
+{
+public:
+	Anthill(int sx, int sy, int ColN, Compiler* compiler, StudentWorld* stw) : Actor(IID_ANT_HILL, sx, sy, GraphObject::right, 2, 8999, false, false, stw), colNum(ColN), m_compiler(compiler)
+	{};
+	virtual void doSomething();
+	int getColN() { return colNum; };
+	Compiler* getComp() { return m_compiler; };
+
+private:
+	int colNum;
+	Compiler* m_compiler;
+};
 
 
 #endif // ACTOR_H_

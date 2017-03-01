@@ -382,9 +382,7 @@ void poison::doSomething()
 		//cout << hldr[walk]->currHealth()<< "bugs health before pool" << endl;
 		hldr[walk]->setHelath(hldr[walk]->currHealth() - 150);
 		//cout << hldr[walk]->currHealth() << "bugs health after pool" << endl;
-	}
-		
-	
+	}	
 }
 
 //============================================================
@@ -411,6 +409,75 @@ void poolofWater::doSomething()
 }
 
 //============================================================
+//=                  Pheromone class                         =
+//============================================================
+void pheromone::doSomething()
+{
+	setHelath(currHealth() - 1);
+	if(currHealth() <= 0)
+		setalive(false);
+}
+
+//============================================================
+//=                     Ant   class                          =
+//============================================================
+void Ant::doSomething()
+{
+	//lossing 1 hitpoint 
+	setHelath(currHealth() - 1);
+	if (checkhealth())
+		return;
+	if (checksleeping())
+		return;
+
+}
+//============================================================
+//=                   Anthill class                          =
+//============================================================
+void Anthill::doSomething()
+{
+	setHelath(currHealth() - 1);
+	if (currHealth() <= 0)
+		setalive(false);
+	if (getStdW()->findwhatsthere(getX(), getY(), IID_FOOD))
+	{
+		int lefthealth = getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth();
+		if (lefthealth >= 10000)
+			lefthealth = 10000;
+		setHelath(currHealth() + lefthealth);
+		getStdW()->actor(getX(), getY(), IID_FOOD)->setHelath(getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth() - lefthealth);
+		if (getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth() == 0)
+			getStdW()->actor(getX(), getY(), IID_FOOD)->setalive(false);
+		return;
+	}
+	if (currHealth() >= 2000)
+	{
+		int id;
+		switch (getColN())
+		{
+		case(0):
+			id = IID_ANT_TYPE0;
+			break;
+		case(1):
+			id = IID_ANT_TYPE1;
+			break;
+		case(2):
+			id = IID_ANT_TYPE2;
+			break;
+		case(3):
+			id = IID_ANT_TYPE3;
+			break;
+		default:
+			break;
+		}
+		Actor* ptr = new Ant(id, getColN(), getX(), getY(), getComp(), getStdW());
+		getStdW()->addActor(getX(), getY(), ptr);
+		setHelath(currHealth() - 1500);
+		//ASK StudentWorld to increase the count of total number of ants 
+		getStdW()->incre_n_ant_x(getColN());
+	}
+}
+//============================================================
 //=                 utility                                  =
 //============================================================
 GraphObject::Direction randDir()
@@ -436,5 +503,4 @@ GraphObject::Direction randDir()
 		break;
 	}
 }
-
 

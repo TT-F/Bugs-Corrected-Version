@@ -38,6 +38,10 @@ public:
 	void addFood(int x, int y, int health);
 
 	void addActor(int x, int y, Actor* actor);
+
+	void incre_n_ant_x(int col); //how does anthill identify?
+
+	void decre_n_ant_x(int col);
 	
 	int getCurrentTicks() const;
 
@@ -56,6 +60,10 @@ public:
 private:
 	std::list<Actor*> actorobjhld[VIEW_WIDTH][VIEW_HEIGHT];
 	int elaptick = 0;
+	int n_ant_0 = 0;
+	int n_ant_1 = 0;
+	int n_ant_2 = 0;
+	int n_ant_3 = 0;
 
 };
 
