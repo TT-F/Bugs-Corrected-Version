@@ -210,14 +210,18 @@ void StudentWorld::cleanUp()
 
 bool StudentWorld::checkpebble(int x, int y) //can be replaced 
 {
-	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); ++it)
+	/*for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); ++it)
 	{
 		if ((*it)->isblocked())
 			return true;
 		else
 			return false; 
 	}
-	return false; 
+	return false; */
+	if (findwhatsthere(x, y, IID_ROCK))
+		return true;
+	else
+		return false;
 }
 
 bool StudentWorld::findwhatsthere(int x, int y, int ID) 

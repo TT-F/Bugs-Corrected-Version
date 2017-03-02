@@ -26,7 +26,7 @@ public:
 
 	virtual void cleanUp();
 
-	bool checkpebble(int x, int y);  //can be replaced by the findwhatsthere function 
+	bool checkpebble(int x, int y); 
 
 	bool findwhatsthere(int x, int y, int ID);
 

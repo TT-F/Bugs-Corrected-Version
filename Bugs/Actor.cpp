@@ -70,7 +70,7 @@ Actor* Actor::bite(int x, int y, int lost)
 {
 	if (getStdW()->isthereathingcanbebitten(x, y))
 	{
-		std::cout << "let bite" << std::endl;
+		//std::cout << "let bite" << std::endl;
 		Actor* ptr = getStdW()->aRandthingcanbebitten(x, y);
 		ptr->setHelath(ptr->currHealth() - lost);
 		return ptr; 
@@ -374,7 +374,7 @@ void babbyGrasshopper::doSomething()
 		oldCo.Y = getY();
 		Cord newCo = oldCo;
 		Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
-		std::cout << "aha , a new adult grasshopper" << std::endl;
+		//std::cout << "aha , a new adult grasshopper" << std::endl;
 		getStdW()->addActor(getX(), getY(), act);
 		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() + 100);
