@@ -24,7 +24,7 @@ StudentWorld:: ~StudentWorld()
 int StudentWorld::init()
 {
 	
-	std::vector<string> fileNames = getFilenamesOfAntPrograms();
+	fileNames = getFilenamesOfAntPrograms();
 	for (unsigned i = 0; i < fileNames.size(); i++)
 	{
 		std::string error;
@@ -40,8 +40,8 @@ int StudentWorld::init()
 
 	//loading field 
 	Field f;
-	//string fieldFile = getFieldFilename();???????????????????????
-	string fieldFile = "field.txt";
+	string fieldFile = getFieldFilename();
+	//string fieldFile = "field.txt";
 	string error;
 	if (f.loadField(fieldFile, error) != Field::LoadResult::load_success)
 	{
@@ -72,19 +72,19 @@ int StudentWorld::init()
 			else if (item == Field::poison)
 			{
 				Actor* ptr = new poison(x, y, this);
-				actorobjhld[x][y].push_back(ptr);
+				actorobjhld[x][y].push_front(ptr);
 			}
 			else if (item == Field::water)
 			{
 				Actor* ptr = new poolofWater(x, y, this);
-				actorobjhld[x][y].push_back(ptr);
+				actorobjhld[x][y].push_front(ptr);
 			}
 			else if (item == Field::anthill0)
 			{
 				if (n_player > 0)
 				{
 					Actor* ptr = new Anthill(x, y, 0, compilerForEntrant[0], this);
-					actorobjhld[x][y].push_back(ptr);
+					actorobjhld[x][y].push_front(ptr);
 				}
 			}
 			else if (item == Field::anthill1)
@@ -92,7 +92,7 @@ int StudentWorld::init()
 				if (n_player > 1)
 				{
 					Actor* ptr = new Anthill(x, y, 1, compilerForEntrant[1], this);
-					actorobjhld[x][y].push_back(ptr);
+					actorobjhld[x][y].push_front(ptr);
 				}
 			}
 			else if (item == Field::anthill2)
@@ -100,7 +100,7 @@ int StudentWorld::init()
 				if (n_player > 2)
 				{
 					Actor* ptr = new Anthill(x, y, 2, compilerForEntrant[2], this);
-					actorobjhld[x][y].push_back(ptr);
+					actorobjhld[x][y].push_front(ptr);
 				}
 			}
 			else if (item == Field::anthill3)
@@ -108,7 +108,7 @@ int StudentWorld::init()
 				if (n_player > 3)
 				{
 					Actor* ptr = new Anthill(x, y, 4, compilerForEntrant[3], this);
-					actorobjhld[x][y].push_back(ptr);
+					actorobjhld[x][y].push_front(ptr);
 				}
 			}
 			//more if statements required to be implemented 
@@ -177,10 +177,9 @@ int StudentWorld::move()
 	//check if elaptick has reached 2000 
 	if (elaptick == 2000)
 	{
-		if (0) //false 
+		if (getWinningAntNumber() != -1) 
 		{
-			string winnername;
-			//get name from COMPILER 
+			string winnername = fileNames[getWinningAntNumber()];
 			setWinner(winnername);
 			return   GWSTATUS_PLAYER_WON; //GWSTATUS_ANT_WON; is not found in GameConsts 
 		}
@@ -332,6 +331,39 @@ void StudentWorld::decre_n_ant_x(int col)
 	}
 }
 
+void StudentWorld::emitPhero(int x, int y, int type)
+{
+	int phero_type = -1;
+	switch (type)
+	{
+	case 0:
+		phero_type = IID_PHEROMONE_TYPE0;
+	case 1:
+		phero_type = IID_PHEROMONE_TYPE1;
+	case 2:
+		phero_type = IID_PHEROMONE_TYPE2;
+	case 3:
+		phero_type = IID_PHEROMONE_TYPE3;
+	default:
+		break;
+	}
+	if (findwhatsthere(x, y, phero_type))
+	{
+		if (actor(x, y, phero_type)->currHealth() == 700)
+			actor(x, y, phero_type)->setHelath(768);
+		else if (actor(x, y, phero_type)->currHealth() >= 512) //why the spec says this way???
+			actor(x, y, phero_type)->setHelath(768);
+		else
+			actor(x, y, phero_type)->setHelath(actor(x, y, phero_type)->currHealth()+256);
+	}
+	else
+	{
+		Actor* ptr = new pheromone(phero_type, x, y, this);
+		actorobjhld[x][y].push_front(ptr);
+	}
+
+}
+
 int StudentWorld::getCurrentTicks() const
 {
 	return elaptick;
@@ -362,7 +394,7 @@ int StudentWorld::getNumberOfAntsForAnt(int input) const
 int StudentWorld::getWinningAntNumber() const
 {
 	int win = -1;
-	int maxhld = 0;
+	int maxhld = 5;
 	for (int i = 0;i < n_player;i++)
 	{
 		if (getNumberOfAntsForAnt(i) > maxhld)
@@ -374,10 +406,100 @@ int StudentWorld::getWinningAntNumber() const
 	return win;
 }
 
+bool StudentWorld::isthisdangerou(int x, int y, int IDN)
+{
+	if (enemyonthislocation(x, y, IDN))
+		return true;
+	if (findwhatsthere(x, y, IID_POISON) || findwhatsthere(x, y, IID_WATER_POOL))
+		return true;
+	else
+		return false; 
+}
+
+bool StudentWorld::isthismyanthill(int x, int y, int IDN)
+{
+	/*vector<int> id;
+	switch (IDN)
+	{
+	case IID_ANT_TYPE0:
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE2);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case IID_ANT_TYPE1:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE2);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case IID_ANT_TYPE2:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case IID_ANT_TYPE3:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE2);
+		break;
+	default:
+		break;
+	}*/
+	if (findwhatsthere(x, y, IID_ANT_HILL))
+		if (actor(x, y, IID_ANT_HILL)->getColN() == IDN)
+			return true;
+	return false; 
+}
+
+bool StudentWorld::enemyonthislocation(int x, int y, int IDN) 
+{
+	vector<int> id;
+	id.push_back(IID_ADULT_GRASSHOPPER);
+	id.push_back(IID_BABY_GRASSHOPPER); //do you need this?
+	switch (IDN)
+	{
+	case 0:
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE2);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case 1:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE2);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case 2:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE3);
+		break;
+	case 3:
+		id.push_back(IID_ANT_TYPE0);
+		id.push_back(IID_ANT_TYPE1);
+		id.push_back(IID_ANT_TYPE2);
+		break;
+	default:
+		break;
+	}
+	for (unsigned i = 0;i < id.size();i++)
+	{
+		if (findwhatsthere(x, y, id[i]))
+			return true;
+	}
+	return false; 
+}
+
+bool StudentWorld::foodonthislocation(int x, int y)
+{
+	if (findwhatsthere(x, y, IID_FOOD))
+		return true;
+	else
+		return false; 
+}
+
 bool StudentWorld::isthereathingcanbebitten(int x, int y)
 {
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end();it++)
-		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER) && !(*it)->getselfID())
+		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER || (*it)->whatamI() == IID_ANT_TYPE0 || (*it)->whatamI() == IID_ANT_TYPE1 || (*it)->whatamI() == IID_ANT_TYPE2 || (*it)->whatamI() == IID_ANT_TYPE3) && !(*it)->getselfID())
 			return true;
 	return false;
 }
@@ -408,7 +530,7 @@ Actor * StudentWorld::aRandthingcanbebitten(int x, int y)
 {
 	vector<Actor*> temp_hld;
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); it++)
-		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER) && !(*it)->getselfID())
+		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ADULT_GRASSHOPPER || (*it)->whatamI() == IID_ANT_TYPE0 || (*it)->whatamI() == IID_ANT_TYPE1 || (*it)->whatamI() == IID_ANT_TYPE2 || (*it)->whatamI() == IID_ANT_TYPE3) && !(*it)->getselfID())
 			temp_hld.push_back(*it);
 	int size = temp_hld.size();
 	int pos = randInt(0,size-1);

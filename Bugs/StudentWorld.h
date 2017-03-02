@@ -43,12 +43,22 @@ public:
 	void incre_n_ant_x(int col); //how does anthill identify?
 
 	void decre_n_ant_x(int col);
+
+	void emitPhero(int x, int y, int type);
 	
 	int getCurrentTicks() const; 
 
 	int getNumberOfAntsForAnt(int input) const;
 
 	int  getWinningAntNumber() const;
+
+	bool isthisdangerou(int x, int y, int IDN);
+
+	bool isthismyanthill(int x, int y, int IDN);
+
+	bool enemyonthislocation(int x, int y, int IDN);
+
+	bool foodonthislocation(int x, int y);
 
 	bool isthereathingcanbebitten(int x, int y);
 
@@ -72,6 +82,7 @@ private:
 	int n_ant_2 = 0;
 	int n_ant_3 = 0;
 	int n_player = 0;
+	std::vector<std::string> fileNames;
 
 };
 

@@ -40,6 +40,7 @@ bool Actor::ismoved() const
 	return moved;
 }
 
+//check stun 
 bool Actor::checksleeping()
 {
 	if (getStun() != 0)
@@ -65,13 +66,13 @@ int Actor::getStun() const
 	return Stun;
 }
 
-Actor* Actor::bite(int x, int y)
+Actor* Actor::bite(int x, int y, int lost)
 {
 	if (getStdW()->isthereathingcanbebitten(x, y))
 	{
-		//std::cout << "let bite" << std::endl;
+		std::cout << "let bite" << std::endl;
 		Actor* ptr = getStdW()->aRandthingcanbebitten(x, y);
-		ptr->setHelath(ptr->currHealth() - 50);
+		ptr->setHelath(ptr->currHealth() - lost);
 		return ptr; 
 	}
 	return nullptr; 
@@ -128,7 +129,7 @@ bool insects::checkhealth()
 	{
 		//produce 100 food (using an insects function) 
 		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
-			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(currHealth() + 100);
+			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() + 100);//this place is changed from currhelath to a pointer to health 
 		else
 			getStdW()->addFood(oldCo.X, oldCo.Y, 100);
 		setalive(false);
@@ -171,9 +172,76 @@ bool insects::randomsleep()
 	return false;
 }
 
+bool insects::move()
+{
+	letStun(false);//once it can move, let it can be stuned 
+	Cord oldCo;
+	oldCo.X = getX();
+	oldCo.Y = getY();
+	Cord newCo = oldCo;
+	switch (disDir)
+	{
+	case(GraphObject::up):
+		newCo.Y++;
+		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+		{
+			setDirection(disDir);
+			moveTo(newCo.X, newCo.Y);
+			setmoved(true);
+			return true;
+		}
+		else
+			return false;
+		break;
+	case(GraphObject::down):
+
+		newCo.Y--;
+		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+		{
+			setDirection(disDir);
+			moveTo(newCo.X, newCo.Y);
+			setmoved(true);
+			return true;
+		}
+		else
+			return false;
+		break;
+	case(GraphObject::left):
+
+		newCo.X--;
+		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+		{
+			setDirection(disDir);
+			moveTo(newCo.X, newCo.Y);
+			setmoved(true);
+			return true;
+		}
+		else
+			return false;
+		break;
+	case(GraphObject::right):
+
+		newCo.X++;
+		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
+		{
+			setDirection(disDir);
+			moveTo(newCo.X, newCo.Y);
+			setmoved(true);
+			return true;
+		}
+		else
+			return false;
+		break;
+	default:
+		return false;
+		break;
+	}
+}
+
 void insects::checkandwalk()
 {
 	letStun(false);//once it can move, let it can be stuned 
+
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
@@ -194,6 +262,7 @@ void insects::checkandwalk()
 			moveTo(newCo.X, newCo.Y);
 			setdisDistance(getdisDistance() - 1);
 			setmoved(true);
+			setisbitten(false);
 		}
 		else
 			setdisDistance(0);
@@ -209,6 +278,7 @@ void insects::checkandwalk()
 			moveTo(newCo.X, newCo.Y);
 			setdisDistance(getdisDistance() - 1);
 			setmoved(true);
+			setisbitten(false);
 		}
 		else
 			setdisDistance(0);
@@ -224,6 +294,7 @@ void insects::checkandwalk()
 			moveTo(newCo.X, newCo.Y);
 			setdisDistance(getdisDistance() - 1);
 			setmoved(true);
+			setisbitten(false);
 		}
 		else
 			setdisDistance(0);
@@ -239,6 +310,7 @@ void insects::checkandwalk()
 			moveTo(newCo.X, newCo.Y);
 			setdisDistance(getdisDistance() - 1);
 			setmoved(true);
+			setisbitten(false);
 		}
 		else
 			setdisDistance(0);
@@ -302,6 +374,7 @@ void babbyGrasshopper::doSomething()
 		oldCo.Y = getY();
 		Cord newCo = oldCo;
 		Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
+		std::cout << "aha , a new adult grasshopper" << std::endl;
 		getStdW()->addActor(getX(), getY(), act);
 		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() + 100);
@@ -334,15 +407,18 @@ void adultGrasshopper::doSomething()
 	{
 		//std::cout << "bite" << std::endl;
 		//if there are more than one enemy on this location 
-		Actor* ptr = bite(getX(), getY());
+		Actor* ptr = bite(getX(), getY(), 50);
 		if (ptr != nullptr)
-			if (randInt(1, 2) == 2)
-				if (ptr->whatamI() == IID_ADULT_GRASSHOPPER && !ptr->getselfID())
-				{
-					ptr->bite(getX(), getY());
-					//std::cout << "fan yao yi kou !!!!!!!!!!!!!!!!!" << std::endl;
-				}
-					
+			if (ptr->currHealth() > 0)
+			{
+				if (randInt(1, 2) == 2)
+					if ((ptr->whatamI() == IID_ADULT_GRASSHOPPER || ptr->whatamI() == IID_ANT_TYPE0 || ptr->whatamI() == IID_ANT_TYPE1 || ptr->whatamI() == IID_ANT_TYPE2 || ptr->whatamI() == IID_ANT_TYPE3) && !ptr->getselfID()) //will it bite an ant back????
+					{
+						ptr->bite(getX(), getY(), 50);
+						//std::cout << "fan yao yi kou !!!!!!!!!!!!!!!!!" << std::endl;
+					}
+			}
+
 	}
 	//else 1/10 chance to jump 
 	else if (randInt(1, 10) == 1)
@@ -423,31 +499,249 @@ void pheromone::doSomething()
 //============================================================
 void Ant::doSomething()
 {
+	initselfID(); //initial selfID, so it cannot bite itself
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
 	if (checkhealth())
 		return;
-	if (checksleeping())
+	if (checksleeping()) //check stun 
 		return;
 	Compiler::Command cmd;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10;i++)
 	{
+		GraphObject::Direction direction = getdisDir();
 		if (!m_compiler->getCommand(ic, cmd))
 		{
+			
 			setalive(false);
 			return;
 		}
-
+	
 		switch (cmd.opcode)
 		{
 		case Compiler::moveForward:
-
+			if (move())
+			{
+				setisblocked(false);
+				setisbitten(false);
+			}
+			else
+				setisblocked(true);
+			ic++;
+			return;
 			break;
+		case Compiler::eatFood:
+			setfoodholder(-100);
+			ic++;
+			return;
+			break;
+		case Compiler::dropFood:
+			Cord oldCo;
+			oldCo.X = getX();
+			oldCo.Y = getY();
+			Cord newCo = oldCo;
+			if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
+				getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getfoodholder());
+			else
+				getStdW()->addFood(oldCo.X, oldCo.Y, getfoodholder());
+
+			ic++;
+			return;
+			break;
+		case Compiler::bite:
+			bite(getX(), getY(), 15);
+			ic++;
+			return;
+			break;
+		case Compiler::pickupFood:
+			if (getfoodholder() <= 1800)
+			{
+				int ant_ability = 1800 - getfoodholder();
+				int food_cap = getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth();
+				if (food_cap <= ant_ability)
+				{
+					if (food_cap <= 400)
+					{
+						setfoodholder(food_cap);
+						getStdW()->actor(getX(), getY(), IID_FOOD)->setHelath(0);
+						getStdW()->actor(getX(), getY(), IID_FOOD)->setalive(false);
+					}
+					else
+					{
+						setfoodholder(400);
+						getStdW()->actor(getX(), getY(), IID_FOOD)->setHelath(getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth() - 400);
+					}
+				}
+				else
+				{
+					setfoodholder(400);
+					getStdW()->actor(getX(), getY(), IID_FOOD)->setHelath(getStdW()->actor(getX(), getY(), IID_FOOD)->currHealth() - 400);
+				}
+			}
+			ic++;
+			return;
+			break;
+		case Compiler::emitPheromone:
+			getStdW()->emitPhero(getX(), getY(), getColN());
+			ic++;
+			return;
+			break;
+		case Compiler::faceRandomDirection:
+			setdisDir(randDir());
+			ic++;
+			return;
+			break;
+		case Compiler::generateRandomNumber:
+			
+			if (stoi(cmd.operand1) == 0)
+				randNumber = 0;
+			else
+				randNumber = randInt(0, stoi(cmd.operand1) - 1);
+			ic++;
+			break;
+		case Compiler::goto_command:
+			ic = stoi(cmd.operand1);
+			break;
+		case Compiler::if_command:	
+			{
+				Cord oldCo;
+				oldCo.X = getX();
+				oldCo.Y = getY();
+				Cord newCo = oldCo;
+				switch (stoi(cmd.operand1))
+				{
+				case Compiler::last_random_number_was_zero:
+					if (randInt == 0)
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_am_carrying_food:
+					if (foodholder > 0)
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_am_hungry:
+					if (currHealth() <= 25)
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_am_standing_with_an_enemy:
+					if (getStdW()->enemyonthislocation(getX(), getY(), getColN()))
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_am_standing_on_food:
+					if (getStdW()->foodonthislocation(getX(), getY()))
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_am_standing_on_my_anthill:
+					if (getStdW()->isthismyanthill(getX(), getY(), getColN()))
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_smell_pheromone_in_front_of_me:
+					
+					
+					int phero;
+					switch (getColN())
+					{
+					case 0:
+						phero = IID_PHEROMONE_TYPE0;
+						break;
+					case 1:
+						phero = IID_PHEROMONE_TYPE1;
+						break;
+					case 2:
+						phero = IID_PHEROMONE_TYPE2;
+						break;
+					case 3:
+						phero = IID_PHEROMONE_TYPE3;
+						break;
+					default:
+						break;
+					}
+					switch (direction)
+					{
+					case GraphObject::none:
+						break;
+					case GraphObject::up:
+						newCo.Y++;
+						break;
+					case GraphObject::right:
+						newCo.X++;
+						break;
+					case GraphObject::down:
+						newCo.Y--;
+						break;
+					case GraphObject::left:
+						newCo.X--;
+						break;
+					default:
+						break;
+					}
+					if (getStdW()->findwhatsthere(newCo.X, newCo.Y, phero))
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_smell_danger_in_front_of_me:
+					
+					Cord newCo1 = oldCo;
+					switch (direction)
+					{
+					case GraphObject::none:
+						break;
+					case GraphObject::up:
+						newCo1.Y++;
+						break;
+					case GraphObject::right:
+						newCo1.X++;
+						break;
+					case GraphObject::down:
+						newCo1.Y--;
+						break;
+					case GraphObject::left:
+						newCo1.X--;
+						break;
+					default:
+						break;
+					}
+					break;
+					if(getStdW()->isthisdangerou(getX(),getY(),getColN()))
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_was_bit:
+					if(getisbitten())
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				case Compiler::i_was_blocked_from_moving:
+					if (getisblocked())
+						ic = stoi(cmd.operand2);
+					else
+						ic++;
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+
 		default:
 			break;
 		}
 	}
-
+	return;
 }
 //============================================================
 //=                   Anthill class                          =

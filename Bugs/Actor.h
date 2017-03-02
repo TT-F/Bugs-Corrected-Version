@@ -27,7 +27,7 @@ class Actor : public GraphObject
 {
 public:
 	Actor(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* world)
-		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false), isStun(false), isPosion(false)
+		: GraphObject(ID, sX, sY, sDire, depth), Health(heSt), m_world(world), blocked(block), moved(move), alive(true), ID(ID), sx(sX), sy(sY), selfID(false), isStun(false), isPosion(false), isbitten(false)
 	{};
 	virtual ~Actor() {};
 	
@@ -39,15 +39,14 @@ public:
 	void setY(int input);
 	void initselfID() { selfID = true; };
 	void removeselfID() { selfID = false; };
+	void setColN(int input) { colNum = input; };
 	bool getselfID() { return selfID; };
-	Actor* bite(int x, int y);
+	Actor* bite(int x, int y, int lost);
 	void setStun(int input);
-
 	void letStun(bool input);
 	void letPoison(bool input);
 	bool istStun() const { return isStun; };
 	bool istPosion() const { return isPosion; };
-
 	bool checksleeping();
 	int randDis(int s, int end);
 	bool isblocked() const;
@@ -57,7 +56,9 @@ public:
 	bool getalive() const;
 	int whatamI() const;
 	int getStun() const;
-	
+	int getColN() const { return colNum; };
+	void setisbitten(bool input) { isbitten = input; };
+	bool getisbitten() { return isbitten; };
 	
 
 private:
@@ -71,8 +72,10 @@ private:
 	int sx;
 	int sy;
 	int Stun;
+	int colNum;
 	bool isStun;
 	bool isPosion;
+	bool isbitten;
 };
 
 //============================================================
@@ -106,9 +109,14 @@ public:
 	
 	bool eatfood();
 	bool randomsleep();
+	bool move();
 	void checkandwalk();
+	void setdisDir(GraphObject::Direction input) { disDir = input; };
+	GraphObject::Direction getdisDir() { return disDir; };
 	Cord radiusten();
 	
+	
+
 	//Mutator 
 	void setdisDistance(int input);
 	
@@ -228,16 +236,24 @@ class Ant : public insects
 {
 public:
 	Ant(int ID, int colN, int sx, int sy, Compiler* compiler, StudentWorld*stw) :
-		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw), colNum(colN), m_compiler(compiler)
+		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw), colNum(colN), m_compiler(compiler), isblocked(false)
 	{};
 	virtual void doSomething();
 	int getColN() { return colNum; };
-
+	void setisblocked(bool input) { isblocked = input; };
+	
+	bool getisblocked() { return isblocked; };
+	void setfoodholder(int input) { foodholder += input; };
+	int getfoodholder() { return foodholder; };
 
 private:
 	int colNum;
 	Compiler* m_compiler;
-	int ic = 0;
+	int ic = 0; //instruction counter (what does it do????)
+	bool isblocked;
+	
+	int foodholder = 0;
+	int randNumber;
 };
 
 //============================================================
@@ -246,14 +262,16 @@ private:
 class Anthill : public Actor //need passing in a Compiler Object 
 {
 public:
-	Anthill(int sx, int sy, int ColN, Compiler* compiler, StudentWorld* stw) : Actor(IID_ANT_HILL, sx, sy, GraphObject::right, 2, 8999, false, false, stw), colNum(ColN), m_compiler(compiler)
-	{};
+	Anthill(int sx, int sy, int ColN, Compiler* compiler, StudentWorld* stw) : Actor(IID_ANT_HILL, sx, sy, GraphObject::right, 2, 8999, false, false, stw), m_compiler(compiler)
+	{
+		setColN(ColN);
+	};
 	virtual void doSomething();
-	int getColN() { return colNum; };
+	
 	Compiler* getComp() { return m_compiler; };
 
 private:
-	int colNum;
+	
 	Compiler* m_compiler;
 };
 
