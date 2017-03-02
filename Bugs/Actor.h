@@ -44,11 +44,11 @@ public:
 	Actor* bite(int x, int y, int lost);
 	void setStun(int input);
 	void letStun(bool input);
-	void letPoison(bool input);
+	//void letPoison(bool input);
 	bool istStun() const { return isStun; };
-	bool istPosion() const { return isPosion; };
+	//bool istPosion() const { return isPosion; };
 	bool checksleeping();
-	int randDis(int s, int end);
+	//int randDis(int s, int end);
 	bool isblocked() const;
 	int currHealth() const;
 	StudentWorld* getStdW() const;
@@ -87,6 +87,7 @@ public:
 	pebble(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, StudentWorld* StWorld) :
 		Actor(ID, sX, sY, sDire, depth, heSt, block, false, StWorld)
 	{};
+	
 	virtual void doSomething() {};
 private:
 

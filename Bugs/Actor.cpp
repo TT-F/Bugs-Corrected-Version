@@ -78,12 +78,12 @@ Actor* Actor::bite(int x, int y, int lost)
 	return nullptr; 
 }
 
-int Actor::randDis(int start, int end)
-{
-	int a = rand() % (end-1) + start;
-	/*std::cout << "the random distance is " << a << std::endl;*/
-	return a;
-}
+//int Actor::randDis(int start, int end)
+//{
+//	int a = rand() % (end-1) + start;
+//	/*std::cout << "the random distance is " << a << std::endl;*/
+//	return a;
+//}
 
 //void Actor::setX(int input)
 //{
@@ -105,10 +105,10 @@ void Actor::letStun(bool input)
 	isStun = input;
 }
 
-void Actor::letPoison(bool input)
-{
-	isPosion = input;
-}
+//void Actor::letPoison(bool input)
+//{
+//	isPosion = input;
+//}
 
 StudentWorld * Actor::getStdW() const
 {
@@ -248,7 +248,7 @@ void insects::checkandwalk()
 	Cord newCo = oldCo;
 	if (getdisDistance() == 0)
 	{
-		setdisDistance(randDis(2, 10));
+		setdisDistance(randInt(2,10));
 		disDir = randDir();
 	}
 	switch (disDir)
