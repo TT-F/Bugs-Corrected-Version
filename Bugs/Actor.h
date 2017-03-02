@@ -35,8 +35,8 @@ public:
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
 	void setmoved(bool input);
 	void setalive(bool input);
-	void setX(int input);
-	void setY(int input);
+	/*void setX(int input);
+	void setY(int input);*/
 	void initselfID() { selfID = true; };
 	void removeselfID() { selfID = false; };
 	void setColN(int input) { colNum = input; };
@@ -103,10 +103,8 @@ public:
 		
 	};
 	virtual void doSomething()=0;
-	//utility 
-	
+
 	bool checkhealth(); 
-	
 	bool eatfood();
 	bool randomsleep();
 	bool move();
@@ -115,14 +113,10 @@ public:
 	GraphObject::Direction getdisDir() { return disDir; };
 	Cord radiusten();
 	
-	
 
-	//Mutator 
-	void setdisDistance(int input);
-	
+	void setdisDistance(int input);	
 	void bitother(int ID, int x, int y, int input);
 	
-
 	//Accessory 
 	int getdisDistance() const;
 	
@@ -187,7 +181,7 @@ public:
 	trap(int ID, int sX, int sY, StudentWorld* StWorld) :
 		Actor(ID, sX, sY, GraphObject::right, 2, 10000, false, false, StWorld)
 	{};
-	virtual void doSomething() {};
+	virtual void doSomething() = 0;
 	
 private:
 };
@@ -252,8 +246,7 @@ private:
 	//int colNum;
 	Compiler* m_compiler;
 	int ic = 0; //instruction counter (what does it do????)
-	bool isblocked;
-	
+	bool isblocked;	
 	int foodholder = 0;
 	int randNumber;
 };
@@ -268,12 +261,10 @@ public:
 	{
 		setColN(ColN);
 	};
-	virtual void doSomething();
-	
+	virtual void doSomething();	
 	Compiler* getComp() { return m_compiler; };
 
-private:
-	
+private:	
 	Compiler* m_compiler;
 };
 

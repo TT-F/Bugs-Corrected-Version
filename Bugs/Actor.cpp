@@ -85,15 +85,15 @@ int Actor::randDis(int start, int end)
 	return a;
 }
 
-void Actor::setX(int input)
-{
-	sx = input;
-}
-
-void Actor::setY(int input)
-{
-	sy = input;
-}
+//void Actor::setX(int input)
+//{
+//	sx = input;
+//}
+//
+//void Actor::setY(int input)
+//{
+//	sy = input;
+//}
 
 void Actor::setStun(int input)
 {
