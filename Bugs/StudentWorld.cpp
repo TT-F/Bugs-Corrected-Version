@@ -107,7 +107,7 @@ int StudentWorld::init()
 			{
 				if (n_player > 3)
 				{
-					Actor* ptr = new Anthill(x, y, 4, compilerForEntrant[3], this);
+					Actor* ptr = new Anthill(x, y, 3, compilerForEntrant[3], this);
 					actorobjhld[x][y].push_front(ptr);
 				}
 			}
@@ -580,7 +580,7 @@ string StudentWorld::displayFouritem(int ticks, int a0, int a1, int a2, int a3, 
 		default:
 			break;
 		}
-		output += (count.str() + "  ");
+		output += (count.str() + " " + "ants  ");
 	}
 
 	

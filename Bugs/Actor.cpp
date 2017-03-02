@@ -503,7 +503,10 @@ void Ant::doSomething()
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
 	if (checkhealth())
+	{
 		return;
+	}
+		
 	if (checksleeping()) //check stun 
 		return;
 	Compiler::Command cmd;

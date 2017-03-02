@@ -236,10 +236,12 @@ class Ant : public insects
 {
 public:
 	Ant(int ID, int colN, int sx, int sy, Compiler* compiler, StudentWorld*stw) :
-		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw), colNum(colN), m_compiler(compiler), isblocked(false)
-	{};
+		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw),  m_compiler(compiler), isblocked(false)
+	{
+		setColN(colN);
+	};
 	virtual void doSomething();
-	int getColN() { return colNum; };
+	//int getColN() { return colNum; };
 	void setisblocked(bool input) { isblocked = input; };
 	
 	bool getisblocked() { return isblocked; };
@@ -247,7 +249,7 @@ public:
 	int getfoodholder() { return foodholder; };
 
 private:
-	int colNum;
+	//int colNum;
 	Compiler* m_compiler;
 	int ic = 0; //instruction counter (what does it do????)
 	bool isblocked;
