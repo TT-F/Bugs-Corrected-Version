@@ -18,6 +18,29 @@ GameWorld* createStudentWorld(string assetDir)
 
 StudentWorld:: ~StudentWorld()
 {
+	/*cout << "about to delete student world " << endl;
+	for (int x = 0; x < VIEW_WIDTH;x++)
+	{
+		for (int y = 0; y < VIEW_HEIGHT;y++)
+		{
+			//freeing all Actor
+			std::list<Actor*>::iterator ite = actorobjhld[x][y].begin();
+			while (ite != actorobjhld[x][y].end())
+			{
+				//cout << x << " " << y << " " << (*ite)->getselfID() << " list size " << actorobjhld[x][y].size() << endl;
+				delete *ite;
+				ite = actorobjhld[x][y].erase(ite);
+			}
+		}
+	}
+	for (int i = 0; i <  n_player;i++)
+	{
+		if (compilerForEntrant[i] != nullptr)
+		{
+			delete compilerForEntrant[i];
+		}
+
+	}*/
 	cleanUp();
 }
 
@@ -124,7 +147,7 @@ int StudentWorld::move()
 {
 	//increase ticks 
 	updateTickCount();
-
+	//cout << "move is called" <<endl;
 	for (int x = 0; x < VIEW_WIDTH;x++)
 	{
 		for (int y = 0; y < VIEW_HEIGHT;y++)
@@ -199,16 +222,23 @@ void StudentWorld::cleanUp()
 		for (int y = 0; y < VIEW_HEIGHT;y++)
 		{
 			//freeing all Actor
-			for (std::list<Actor*>::iterator ite = actorobjhld[x][y].begin(); ite != actorobjhld[x][y].end();ite++)
+			std::list<Actor*>::iterator ite = actorobjhld[x][y].begin();
+			while (ite != actorobjhld[x][y].end())
 			{
+				//cout << x << " " << y << " " << (*ite)->getselfID() << " list size " << actorobjhld[x][y].size() <<endl;
 				delete *ite;
-				//ite = actorobjhld[x][y].erase(ite);
+				ite = actorobjhld[x][y].erase(ite);
 			}
 		}
 	}
-	for (int i = 0; i < 4;i++)
+	for (int i = 0; i < n_player;i++)
 	{
-		delete compilerForEntrant[i];
+		if (compilerForEntrant[i] != nullptr)
+		{
+			delete compilerForEntrant[i];
+			compilerForEntrant[i] = nullptr;
+		}
+		
 	}
 }
 
@@ -342,16 +372,21 @@ void StudentWorld::decre_n_ant_x(int col)
 void StudentWorld::emitPhero(int x, int y, int type)
 {
 	int phero_type = -1;
+	//std::cout << type << endl;
 	switch (type)
 	{
 	case 0:
 		phero_type = IID_PHEROMONE_TYPE0;
+		break;
 	case 1:
 		phero_type = IID_PHEROMONE_TYPE1;
+		break;
 	case 2:
 		phero_type = IID_PHEROMONE_TYPE2;
+		break;
 	case 3:
 		phero_type = IID_PHEROMONE_TYPE3;
+		break;
 	default:
 		break;
 	}
@@ -549,7 +584,7 @@ std::vector<Actor*> StudentWorld::allcanbetrap(int x, int y)
 {
 	vector<Actor*> temp_hld;
 	for (std::list<Actor*>::iterator it = actorobjhld[x][y].begin(); it != actorobjhld[x][y].end(); it++)
-		if (((*it)->whatamI() == IID_BABY_GRASSHOPPER))
+		if ((*it)->whatamI() == IID_BABY_GRASSHOPPER || (*it)->whatamI() == IID_ANT_TYPE0 || (*it)->whatamI() == IID_ANT_TYPE1 || (*it)->whatamI() == IID_ANT_TYPE2 || (*it)->whatamI() == IID_ANT_TYPE3)
 			temp_hld.push_back(*it);
 	return temp_hld;
 }

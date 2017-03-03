@@ -35,8 +35,8 @@ public:
 	virtual void setHelath(int wantedHealth); //changing the healthy statue of the actor 
 	void setmoved(bool input);
 	void setalive(bool input);
-	/*void setX(int input);
-	void setY(int input);*/
+	void setX(int input);
+	void setY(int input);
 	void initselfID() { selfID = true; };
 	void removeselfID() { selfID = false; };
 	void setColN(int input) { colNum = input; };
@@ -99,7 +99,7 @@ class insects :public Actor
 {
 public:
 	insects(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
-		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
+		Actor(ID, sX, sY, sDire, depth, heSt, block, move, StWorld), disDir(sDire)
 	{
 		
 	};
@@ -137,7 +137,8 @@ public:
 	babbyGrasshopper(int ID, int sX, int sY, Direction sDire, int depth, int heSt, bool block, bool move, StudentWorld* StWorld) :
 		 insects(ID, sX, sY, sDire, depth, heSt, block, move, StWorld)
 	{
-		setStun(2);
+		setStun(0);
+		setdisDistance(randInt(2, 10));
 	};
 	virtual void doSomething();
 	
@@ -152,8 +153,10 @@ class adultGrasshopper : public insects
 {
 public:
 	adultGrasshopper(int sX, int sY, StudentWorld* StWorld) :
-		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) {
-		setStun(2);
+		insects(IID_ADULT_GRASSHOPPER, sX, sY, randDir(), 0, 1600, false, false, StWorld) 
+	{
+		setStun(0);
+		setdisDistance(randInt(2, 10));
 	};
 	virtual void doSomething(); 
 	
@@ -231,7 +234,7 @@ class Ant : public insects
 {
 public:
 	Ant(int ID, int colN, int sx, int sy, Compiler* compiler, StudentWorld*stw) :
-		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw),  m_compiler(compiler), isblocked(false)
+		insects(ID, sx, sy, randDir(), 1, 1500, false, false, stw),  m_compiler(compiler), isblocked(false),foodholder(0)
 	{
 		setColN(colN);
 	};
@@ -248,7 +251,7 @@ private:
 	Compiler* m_compiler;
 	int ic = 0; //instruction counter (what does it do????)
 	bool isblocked;	
-	int foodholder = 0;
+	int foodholder;
 	int randNumber;
 };
 

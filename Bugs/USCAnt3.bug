@@ -12,7 +12,17 @@ colony: USCAnt3 // first line specifies the ant's name
  
 start:
  	faceRandomDirection   
- 	moveForward           
+ 	moveForward     
+
+	if i_am_standing_with_an_enemy then goto produce
+ 	if i_am_carrying_food then goto produce 
+ 	if i_smell_pheromone_in_front_of_me then goto produce
+	if i_smell_danger_in_front_of_me then goto produce
+	if i_am_standing_on_my_anthill then goto produce
+	if i_was_bit then goto produce
+	if i_was_blocked_from_moving then goto produce
+	generateRandomNumber 3
+	if last_random_number_was_zero then goto produce 
  	if i_am_standing_on_food then goto on_food
  	if i_am_hungry then goto eat_food
  	if i_am_standing_on_my_anthill then goto on_hill
@@ -21,6 +31,8 @@ start:
 on_food:
  	pickUpFood
  	goto start 	// jump back to the "start:" line
+ 	//rotateClockwise
+	//goto on_food 
  
 eat_food:
  	eatFood          // assumes our ant has already picked up food
@@ -30,3 +42,7 @@ on_hill:
  	dropFood    // feed the anthill's queen so she
                  // can produce more ants for the colony
  	goto start  // jump back to the "start:" line
+
+produce:
+ emitPheromone
+ goto start

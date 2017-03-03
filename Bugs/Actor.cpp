@@ -73,6 +73,7 @@ Actor* Actor::bite(int x, int y, int lost)
 		//std::cout << "let bite" << std::endl;
 		Actor* ptr = getStdW()->aRandthingcanbebitten(x, y);
 		ptr->setHelath(ptr->currHealth() - lost);
+		ptr->setisbitten(true);
 		return ptr; 
 	}
 	return nullptr; 
@@ -85,15 +86,15 @@ Actor* Actor::bite(int x, int y, int lost)
 //	return a;
 //}
 
-//void Actor::setX(int input)
-//{
-//	sx = input;
-//}
-//
-//void Actor::setY(int input)
-//{
-//	sy = input;
-//}
+void Actor::setX(int input)
+{
+	sx = input;
+}
+
+void Actor::setY(int input)
+{
+	sy = input;
+}
 
 void Actor::setStun(int input)
 {
@@ -121,12 +122,14 @@ StudentWorld * Actor::getStdW() const
 
 bool insects::checkhealth()
 {
+	//cout << "this " << getColN() << "its current health" << currHealth() << endl;
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
-	Cord newCo = oldCo;
+	//Cord newCo = oldCo;
 	if (currHealth() <= 0)
 	{
+		//cout << "this " << getColN() <<"its death health" << currHealth() << endl;
 		//produce 100 food (using an insects function) 
 		if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 			getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth() + 100);//this place is changed from currhelath to a pointer to health 
@@ -143,7 +146,7 @@ bool insects::eatfood()
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
-	Cord newCo = oldCo;
+	//Cord newCo = oldCo;
 	if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 	{
 		int lefthealth = getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->currHealth();
@@ -179,13 +182,14 @@ bool insects::move()
 	oldCo.X = getX();
 	oldCo.Y = getY();
 	Cord newCo = oldCo;
+	//setDirection(disDir);
 	switch (disDir)
 	{
 	case(GraphObject::up):
 		newCo.Y++;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
-			setDirection(disDir);
+			//setDirection(disDir);
 			moveTo(newCo.X, newCo.Y);
 			setmoved(true);
 			return true;
@@ -198,7 +202,7 @@ bool insects::move()
 		newCo.Y--;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
-			setDirection(disDir);
+			//setDirection(disDir);
 			moveTo(newCo.X, newCo.Y);
 			setmoved(true);
 			return true;
@@ -211,7 +215,7 @@ bool insects::move()
 		newCo.X--;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
-			setDirection(disDir);
+			//setDirection(disDir);
 			moveTo(newCo.X, newCo.Y);
 			setmoved(true);
 			return true;
@@ -224,7 +228,7 @@ bool insects::move()
 		newCo.X++;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
-			setDirection(disDir);
+			//setDirection(disDir);
 			moveTo(newCo.X, newCo.Y);
 			setmoved(true);
 			return true;
@@ -236,25 +240,32 @@ bool insects::move()
 		return false;
 		break;
 	}
+	setX(newCo.X);
+	setY(newCo.Y);
 }
 
 void insects::checkandwalk()
 {
 	letStun(false);//once it can move, let it can be stuned 
-
+	//cout << "check and walk" <<endl;
 	Cord oldCo;
 	oldCo.X = getX();
 	oldCo.Y = getY();
 	Cord newCo = oldCo;
 	if (getdisDistance() == 0)
 	{
+		//cout << "direction changed" <<endl;
 		setdisDistance(randInt(2,10));
 		disDir = randDir();
+		setDirection(disDir);
+		
 	}
+	//cout << "my cordicate x,y is " << getX() << " " << getY() << endl;
+	//cout << "disdirction is " << disDir << endl;
 	switch (disDir)
 	{
 	case(GraphObject::up):
-
+		//newCo = oldCo;
 		newCo.Y++;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
@@ -270,7 +281,7 @@ void insects::checkandwalk()
 		setStun(2);
 		break;
 	case(GraphObject::down):
-
+		//newCo = oldCo;
 		newCo.Y--;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
@@ -286,7 +297,7 @@ void insects::checkandwalk()
 		setStun(2);
 		break;
 	case(GraphObject::left):
-
+		//newCo = oldCo;
 		newCo.X--;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
@@ -302,7 +313,7 @@ void insects::checkandwalk()
 		setStun(2);
 		break;
 	case(GraphObject::right):
-
+		//newCo = oldCo;
 		newCo.X++;
 		if (!getStdW()->checkpebble(newCo.X, newCo.Y))
 		{
@@ -320,22 +331,25 @@ void insects::checkandwalk()
 	default:
 		break;
 	}
+	setX(newCo.X);
+	setY(newCo.Y);
+	//cout << "my  newcordicate x,y is " << getX() << " " << getY() << endl;
 }
 
 Cord insects::radiusten()
 {
+
+
+
 	Cord mvCo;
+	int angle = randInt(0, 359);
+	int radius = randInt(1, 10);
+	mvCo.X = radius*cos(angle);
+	mvCo.Y = radius*sin(angle);
 	
-	mvCo.X = 0;
-	mvCo.Y = 0;
-	mvCo.X = randInt(1, 10);
-	mvCo.Y = randInt(1, 10);
-	if (randInt(0, 1) == 1)
-		mvCo.X = mvCo.X*(-1);
-	if (randInt(0, 1) == 1)
-		mvCo.Y = mvCo.Y*(-1);
-	if ( pow(mvCo.X, 2)+ (mvCo.Y, 2) > 100)
-		mvCo = radiusten();
+
+
+
 	return mvCo;
 }
 
@@ -362,17 +376,19 @@ void babbyGrasshopper::doSomething()
 {
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
-	
+	//cout << "baby do somehting is called " <<endl;
 	if (checkhealth())
 		return;
+	//cout << "checkpoint 1" <<endl;
 	if (checksleeping())
 		return;
+	//cout << "checkpoint 2" <<endl;
 	if (currHealth() >= 1600)
 	{
 		Cord oldCo;
 		oldCo.X = getX();
 		oldCo.Y = getY();
-		Cord newCo = oldCo;
+		//Cord newCo = oldCo;
 		Actor* act = new adultGrasshopper(getX(), getY(), getStdW());
 		//std::cout << "aha , a new adult grasshopper" << std::endl;
 		getStdW()->addActor(getX(), getY(), act);
@@ -383,10 +399,12 @@ void babbyGrasshopper::doSomething()
 		setalive(false);
 		return;
 	}
+	//cout << "checkpoint 3" <<endl;
 	//eat food 
 	if (eatfood())
 		if (randomsleep())
 			return;
+	//cout << "it should call check and walk" <<endl;
 	checkandwalk();	
 }
 
@@ -503,25 +521,76 @@ void Ant::doSomething()
 	//lossing 1 hitpoint 
 	setHelath(currHealth() - 1);
 	if (checkhealth())
-	{
-		return;
-	}
-		
+		return;		
 	if (checksleeping()) //check stun 
 		return;
 	Compiler::Command cmd;
+	Cord oldCo;
+	oldCo.X = getX();
+	oldCo.Y = getY();
+	Cord newCo = oldCo;
+	//cout << "ant 123 direction" << getdisDir() << endl;
 	for (int i = 0; i < 10;i++)
 	{
 		GraphObject::Direction direction = getdisDir();
+		
 		if (!m_compiler->getCommand(ic, cmd))
 		{
 			
 			setalive(false);
 			return;
 		}
-	
+		int phero = -1;
 		switch (cmd.opcode)
 		{
+		case Compiler::rotateCounterClockwise:
+		{
+			switch (getDirection())
+			{
+			case up:
+				setDirection(left);
+				break;
+			case right:
+				setDirection(up);
+				break;
+			case down:
+				setDirection(right);
+				break;
+			case left:
+				setDirection(down);
+				break;
+			case none:
+				break;
+			default:
+				break;
+			}
+		}
+			return;
+			break;
+		case Compiler::rotateClockwise:
+		{
+			switch (getDirection())
+			{
+			case up:
+				setDirection(right);
+				break;
+			case right:
+				setDirection(down);
+				break;
+			case down:
+				setDirection(left);
+				break;
+			case left:
+				setDirection(up);
+				break;
+			case none:
+				break;
+			default:
+				break;
+			}
+		}
+			return;
+			break;
 		case Compiler::moveForward:
 			if (move())
 			{
@@ -539,10 +608,8 @@ void Ant::doSomething()
 			return;
 			break;
 		case Compiler::dropFood:
-			Cord oldCo;
-			oldCo.X = getX();
-			oldCo.Y = getY();
-			Cord newCo = oldCo;
+			
+			newCo = oldCo;
 			if (getStdW()->findwhatsthere(oldCo.X, oldCo.Y, IID_FOOD))
 				getStdW()->actor(oldCo.X, oldCo.Y, IID_FOOD)->setHelath(getfoodholder());
 			else
@@ -590,7 +657,10 @@ void Ant::doSomething()
 			return;
 			break;
 		case Compiler::faceRandomDirection:
-			setdisDir(randDir());
+			direction = randDir();
+			//cout << "ant direction" << direction << endl;
+			setdisDir(direction);
+			setDirection(direction);
 			ic++;
 			return;
 			break;
@@ -607,19 +677,17 @@ void Ant::doSomething()
 			break;
 		case Compiler::if_command:	
 			{
-				Cord oldCo;
-				oldCo.X = getX();
-				oldCo.Y = getY();
-				Cord newCo = oldCo;
+				newCo = oldCo;
 				switch (stoi(cmd.operand1))
 				{
 				case Compiler::last_random_number_was_zero:
-					if (randInt == 0)
+					if (randNumber == 0)
 						ic = stoi(cmd.operand2);
 					else
 						ic++;
 					break;
 				case Compiler::i_am_carrying_food:
+					//cout << "ant food" << getfoodholder() << endl;
 					if (foodholder > 0)
 						ic = stoi(cmd.operand2);
 					else
@@ -649,10 +717,8 @@ void Ant::doSomething()
 					else
 						ic++;
 					break;
-				case Compiler::i_smell_pheromone_in_front_of_me:
+				case Compiler::i_smell_pheromone_in_front_of_me:				
 					
-					
-					int phero;
 					switch (getColN())
 					{
 					case 0:
@@ -670,6 +736,7 @@ void Ant::doSomething()
 					default:
 						break;
 					}
+					
 					switch (direction)
 					{
 					case GraphObject::none:
@@ -696,28 +763,28 @@ void Ant::doSomething()
 					break;
 				case Compiler::i_smell_danger_in_front_of_me:
 					
-					Cord newCo1 = oldCo;
+					newCo = oldCo;
+					//cout << "ant direction" << getdisDir() << endl;
 					switch (direction)
 					{
 					case GraphObject::none:
 						break;
 					case GraphObject::up:
-						newCo1.Y++;
+						newCo.Y++;
 						break;
 					case GraphObject::right:
-						newCo1.X++;
+						newCo.X++;
 						break;
 					case GraphObject::down:
-						newCo1.Y--;
+						newCo.Y--;
 						break;
 					case GraphObject::left:
-						newCo1.X--;
+						newCo.X--;
 						break;
 					default:
 						break;
 					}
-					break;
-					if(getStdW()->isthisdangerou(getX(),getY(),getColN()))
+					if(getStdW()->isthisdangerou(newCo.X, newCo.Y,getColN()))
 						ic = stoi(cmd.operand2);
 					else
 						ic++;
@@ -729,6 +796,7 @@ void Ant::doSomething()
 						ic++;
 					break;
 				case Compiler::i_was_blocked_from_moving:
+					//cout << "isblock" << getisblocked() << endl;
 					if (getisblocked())
 						ic = stoi(cmd.operand2);
 					else
@@ -751,7 +819,9 @@ void Ant::doSomething()
 //============================================================
 void Anthill::doSomething()
 {
+	//cout << "anthill" << getColN() << "anthill" << currHealth() << endl;
 	setHelath(currHealth() - 1);
+	//cout << "anthill" << getColN() << "anthill" <<currHealth() <<endl;
 	if (currHealth() <= 0)
 		setalive(false);
 	if (getStdW()->findwhatsthere(getX(), getY(), IID_FOOD))
