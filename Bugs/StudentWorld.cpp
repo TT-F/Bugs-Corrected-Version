@@ -206,6 +206,10 @@ void StudentWorld::cleanUp()
 			}
 		}
 	}
+	for (int i = 0; i < 4;i++)
+	{
+		delete compilerForEntrant[i];
+	}
 }
 
 bool StudentWorld::checkpebble(int x, int y) //can be replaced 
